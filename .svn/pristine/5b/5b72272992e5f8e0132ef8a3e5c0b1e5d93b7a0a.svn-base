@@ -1,0 +1,27 @@
+package mTSP_GA;
+
+import java.util.*;
+
+
+public class Population {
+	
+	private List<Individual> population;
+	private HashSet<int[]> patternSet;
+	private int populationSize;
+	private int chromosomeLength1;
+	private int chromosomeLength2;
+
+    public Population(int populationSize,int chromosomeLength1,int chromosomeLength2){
+        this.populationSize=populationSize;
+        this.chromosomeLength1=chromosomeLength1;
+        this.chromosomeLength2=chromosomeLength2;
+        population=new ArrayList<Individual>();
+        
+    }
+    
+    public void initual(){
+    	
+    }
+    
+    
+}

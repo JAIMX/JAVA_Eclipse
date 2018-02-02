@@ -1,0 +1,415 @@
+import java.util.Arrays;
+
+import ilog.concert.*;
+import ilog.concert.IloCopyManager.Check;
+import ilog.cplex.IloCplex;
+import ilog.cplex.IloCplex.Param.Preprocessing;
+
+public class Bender_Decomposition {
+	/**
+	 * Minimize Z=c'*x+f'y 
+	 * s.t A*x+B*y>=b 
+	 * x>=0 
+	 * y in Y
+	 */
+
+	private double UB, LB;
+	private double[] c, f, b;
+	private double[][] A, B;
+	private int numOfX, numOfY, numOfConstraint;
+	private double[] currentY;
+	private double[] b_by;
+	private double fy;
+
+	private IloCplex BMP, subProblem, extremeRay;
+	private IloIntVar[] Y1;
+	private IloNumVar z1,z3,dummy;
+	private IloRange[] range2;
+	private IloRange changeConstraint3;
+	private IloObjective obj2,obj1;
+	
+	
+	
+	private IloNumVar[] u2,u3;
+	private double tolerance;
+	private double[] optX,optY;
+	private final double diff=Math.pow(10,-5);
+//	private static int test=0;
+	
+
+	public Bender_Decomposition(double[] c, double[] f, double[] b, double[][] A, double[][] B, double[] initialY,double tolerance) {
+		this.c = new double[c.length];
+		System.arraycopy(c, 0, this.c, 0, c.length);
+		this.f = new double[f.length];
+		System.arraycopy(f, 0, this.f, 0, f.length);
+		this.b = new double[b.length];
+		System.arraycopy(b, 0, this.b, 0, b.length);
+
+		numOfConstraint = A.length;
+		numOfX = A[0].length;
+		numOfY = B[0].length;
+		this.A = new double[numOfConstraint][numOfX];
+		this.B = new double[numOfConstraint][numOfY];
+		for (int i = 0; i < A.length; i++) {
+			System.arraycopy(A[i], 0, this.A[i], 0, numOfX);
+			System.arraycopy(B[i], 0, this.B[i], 0, numOfY);
+		}
+
+		this.currentY = new double[initialY.length];
+		System.arraycopy(initialY, 0, currentY, 0, initialY.length);
+		
+		this.tolerance=tolerance;
+		optY=new double[numOfY];
+	}
+
+	public void initailizeModel() throws IloException {
+
+		// BMP
+		BMP = new IloCplex();
+		Y1 = new IloIntVar[numOfY];
+		for (int i = 0; i < numOfY; i++) {
+			Y1[i] = BMP.intVar(0, 2, "Y" + i);
+		}
+		z1 = BMP.numVar(Double.MIN_VALUE, Double.MAX_VALUE,"z1");
+
+		IloLinearNumExpr obj = BMP.linearNumExpr();
+		obj.addTerm(1, z1);
+		obj1=BMP.addMinimize(obj);
+		BMP.setParam(Preprocessing.Presolve, false);
+		
+		BMP.setOut(null);
+//		BMP.exportModel("BMP.lp");
+		
+		//subProblem
+		subProblem=new IloCplex();
+		u2=new IloNumVar[numOfConstraint];
+		for(int i=0;i<numOfConstraint;i++) {
+			u2[i]=subProblem.numVar(0, Double.MAX_VALUE,"u"+i);
+		}
+		range2=new IloRange[numOfX];
+		
+		for(int column=0;column<numOfX;column++) {
+			IloLinearNumExpr constraint = subProblem.linearNumExpr();
+			for(int row=0;row<numOfConstraint;row++) {
+				constraint.addTerm(A[row][column], u2[row]);
+			}
+			range2[column]=subProblem.addLe(constraint, c[column]);
+		}
+		
+		b_by=new double[numOfConstraint];
+		for(int i=0;i<numOfConstraint;i++) {
+			double temp=0;
+			for(int j=0;j<numOfY;j++) {
+				temp+=B[i][j]*currentY[j];
+			}
+			b_by[i]=b[i]-temp;
+		}
+		
+		fy=0;
+		for(int i=0;i<numOfY;i++) {
+			fy+=f[i]*currentY[i];
+		}
+//		obj=subProblem.linearNumExpr(fy);
+//		
+//		for(int i=0;i<numOfConstraint;i++) {
+//			obj.addTerm(b_by[i], u2[i]);
+//		}
+//		subProblem.addMaximize(obj);
+		subProblem.setOut(null);
+		subProblem.setParam(Preprocessing.Presolve, false);
+		
+//		subProblem.exportModel("subProblem.lp");
+		
+//		//subProblem2
+//		subProblem2=new IloCplex();
+//		uu=new IloNumVar[numOfX];
+//		for(int i=0;i<numOfX;i++) {
+//			uu[i]=subProblem2.numVar(0, Double.MAX_VALUE,"x"+i);
+//		}
+//		
+//		for(int row=0;row<numOfConstraint;row++) {
+//			IloLinearNumExpr constraint = subProblem2.linearNumExpr();
+//			for(int column=0;column<numOfX;column++) {
+//				constraint.addTerm(A[row][column], uu[column]);
+//			}
+//			subProblem2.addGe(constraint, b_by[row]);
+//		}
+//		
+//		
+//
+//		obj=subProblem2.linearNumExpr(fy);
+//		
+//		for(int i=0;i<numOfX;i++) {
+//			obj.addTerm(c[i], uu[i]);
+//		}
+//		subProblem2.addMinimize(obj);
+//		
+//		subProblem2.exportModel("subProblem2.lp");
+		
+		//extremeRay
+		extremeRay=new IloCplex();
+		u3=new IloNumVar[numOfConstraint];
+		for(int i=0;i<numOfConstraint;i++) {
+			u3[i]=extremeRay.numVar(0, Double.MAX_VALUE,"u"+i);
+		}
+		dummy=extremeRay.numVar(0, 0,"dummy");
+		obj=extremeRay.linearNumExpr();
+		obj.addTerm(1, dummy);
+		extremeRay.addMaximize(obj);
+		extremeRay.addEq(obj, 0);
+		
+		
+		for(int column=0;column<numOfX;column++) {
+			IloLinearNumExpr constraint = extremeRay.linearNumExpr();
+			
+			for(int row=0;row<numOfConstraint;row++) {
+				constraint.addTerm(A[row][column], u3[row]);
+			}
+			extremeRay.addLe(constraint, 0);
+		}
+		extremeRay.setOut(null);
+		extremeRay.setParam(Preprocessing.Presolve, false);
+		
+		extremeRay.exportModel("extremeRay.lp");
+		
+		
+	}
+	
+	public void opt() throws IloException {
+		
+		UB=Double.MAX_VALUE;
+		LB=Double.MIN_VALUE;
+		
+		while(UB-LB>tolerance) {
+			System.out.println("Now the upper bound= "+UB);
+			System.out.println("lower bound= "+LB);
+			System.out.print("currentY= ");
+			System.out.println(Arrays.toString(currentY));
+			System.out.println();
+			
+			IloLinearNumExpr obj=subProblem.linearNumExpr(fy);
+			
+			for(int i=0;i<numOfConstraint;i++) {
+				obj.addTerm(b_by[i], u2[i]);
+			}
+			obj2=subProblem.addMaximize(obj);
+			
+			System.out.println("||----Now solve the subProblem----||");
+			System.out.println(subProblem.toString());
+			System.out.println();
+			
+			if(!subProblem.solve()) {   //infeasible or unbounded
+				if(subProblem.getStatus().toString()=="Infeasible") {
+					System.out.println("-->The subProblem is infeasible");
+					System.out.println("The problem is unbounded!");
+					return;
+				}else {//unbounded
+					System.out.println("-->The subProblem is unbounded, so add a feasible cut to BMP");
+					// add the changing constraint to model extremeRay
+//					IloLinearNumExpr changingConstraint=extremeRay.linearNumExpr(fy);
+					IloLinearNumExpr changingConstraint=extremeRay.linearNumExpr();
+					
+					for(int i=0;i<numOfConstraint;i++) {
+						changingConstraint.addTerm(b_by[i], u3[i]);
+					}
+					
+					/**
+					 * There is still some problem about the generation of extreme ray
+					 */
+//					changeConstraint3=extremeRay.addEq(1, changingConstraint);
+					changeConstraint3=extremeRay.addLe(diff, changingConstraint);
+					
+					
+					System.out.println(extremeRay.toString());
+					extremeRay.solve();
+					System.out.println(extremeRay.getStatus());
+					System.out.println();
+					double[] u=extremeRay.getValues(u3);
+//					System.out.println(Arrays.toString(u));
+					extremeRay.remove(changeConstraint3);
+					//add the feasible cut to BMP
+					double ub=0;
+					for(int i=0;i<numOfConstraint;i++) {
+						ub+=u[i]*b[i];
+					}
+					double[] uB=new double[numOfY];
+					for(int col=0;col<numOfY;col++) {
+						for(int j=0;j<numOfConstraint;j++) {
+							uB[col]+=u[j]*B[j][col];
+						}
+					}
+					
+					IloLinearNumExpr feaCut=BMP.linearNumExpr(ub);
+					for(int i=0;i<numOfY;i++) {
+						feaCut.addTerm(-uB[i], Y1[i]);
+					}
+					BMP.addGe(0, feaCut);
+//					subProblem.remove(obj2);
+				}
+			}else {
+				System.out.println("-->The subProblem has a optimal solution");
+				//subProblem has the optimal solution
+				if(subProblem.getObjValue()<UB) {
+					UB=subProblem.getObjValue();
+					optX=subProblem.getDuals(range2);
+					System.arraycopy(currentY, 0, optY, 0, currentY.length);
+					System.out.println("New optiamal solution generates:");
+					System.out.println("optX= "+Arrays.toString(optX));
+					System.out.println("optY= "+Arrays.toString(optY));
+					System.out.println("optmalObj= "+UB);
+					System.out.println();
+				}
+
+
+
+				System.out.println("Add a optimal cut to BMP");
+				double[] u=subProblem.getValues(u2);
+				
+				double ub=0;
+				for(int i=0;i<numOfConstraint;i++) {
+					ub+=u[i]*b[i];
+				}
+				
+				double[] uB=new double[numOfY];
+				for(int col=0;col<numOfY;col++) {
+					for(int j=0;j<numOfConstraint;j++) {
+						uB[col]+=u[j]*B[j][col];
+					}
+					uB[col]=f[col]-uB[col];
+				}
+				
+				IloLinearNumExpr optCut=BMP.linearNumExpr(ub);
+				for(int i=0;i<numOfY;i++) {
+					optCut.addTerm(uB[i], Y1[i]);
+				}
+				optCut.addTerm(-1, z1);
+				BMP.addGe(0, optCut);
+				
+//				subProblem.remove(obj2);
+			}
+			subProblem.remove(obj2);
+			
+			//solve BMP and produce new currentY, fy, b_by
+			System.out.println("||----Now solve the BMP----||");
+			System.out.println(BMP.toString());
+//			test++;
+//			if(test==1) {
+//				BMP.exportModel("aa.lp");
+//			}
+			if(!BMP.solve()) {// infeasible or unbounded
+				if(BMP.getStatus().toString()=="Infeasible") {
+					System.out.println("-->The BMP is infeasible");
+					System.out.println("The problem is infeasible!");
+					return;
+				}else { // unbounded
+					/**
+					 * This situation may not appear because the initial BMP generate a constraint for z, 
+					 * it always has an optimal solution or infeasible solution.
+					 */
+					System.out.print("-->The BMP is unbounded,");
+					//currentY
+					BMP.remove(obj1);
+					IloObjective temp=BMP.addMaximize();
+					BMP.solve();
+					currentY=BMP.getValues(Y1);
+					System.out.println(" and the new currentY is"+Arrays.toString(currentY));
+					
+					//b_by
+					for(int i=0;i<numOfConstraint;i++) {
+						double temp2=0;
+						for(int j=0;j<numOfY;j++) {
+							temp2+=B[i][j]*currentY[j];
+						}
+						b_by[i]=b[i]-temp2;
+					}
+					
+					//fy
+					fy=0;
+					for(int i=0;i<numOfY;i++) {
+						fy+=f[i]*currentY[i];
+					}
+					
+					BMP.remove(temp);
+					BMP.add(obj1);
+				}
+			}else {
+				System.out.print("-->The BMP is has an optimal solution, ");
+				currentY=BMP.getValues(Y1);
+				System.out.println("and the new currentY is"+Arrays.toString(currentY));
+				
+				//b_by
+				for(int i=0;i<numOfConstraint;i++) {
+					double temp2=0;
+					for(int j=0;j<numOfY;j++) {
+						temp2+=B[i][j]*currentY[j];
+					}
+					b_by[i]=b[i]-temp2;
+				}
+				
+				//fy
+				fy=0;
+				for(int i=0;i<numOfY;i++) {
+					fy+=f[i]*currentY[i];
+				}
+				
+				LB=BMP.getObjValue();
+				System.out.println("The new LB is "+LB);
+			}
+			
+			
+			
+		}
+		System.out.println();
+		System.out.println("The optimal objective = "+UB);
+		System.out.println("The optX= "+Arrays.toString(optX));
+		System.out.println("The optY= "+Arrays.toString(optY));
+		System.out.println("Now the LB= "+LB);
+		
+		
+		
+	}
+	public static void main(String[] args) throws IloException {
+//		double[][] A=new double[20][15];
+//		for(int i=0;i<5;i++) {
+//			A[i][i]=1;
+//			A[i][i+5]=1;
+//			A[i][i+10]=1;
+//		}
+//		int column=0;
+//		for(int i=5;i<20;i++) {
+//			A[i][column]=-1;
+//			column++;
+//		}
+//		
+//		double[][] B=new double[20][3];
+//		for(int row=5;row<20;row++) {
+//			B[row][row/5-1]=1;
+//		}
+//		
+////		for(int i=0;i<20;i++) {
+////			System.out.println(Arrays.toString(B[i]));
+////		}
+//		double[] b=new double[20];
+//		for(int i=0;i<5;i++) {
+//			b[i]=1;
+//		}
+//		
+//		double[] c= {2,3,4,5,7,4,3,1,2,6,5,4,2,1,3};
+//		double[] f= {2,3,3};
+//		double[] initialY= {1,0,0};
+		
+		//test2
+		double[] c= {2,6};
+		double[] f= {2,3};
+		double[] b= {5,4};
+		double[] initialY= {1,1};
+		double[][] A= {{-1,2},{1,-3}};
+		double[][] B= {{3,-1},{2,2}};
+		
+		Bender_Decomposition test=new Bender_Decomposition(c, f, b, A, B, initialY,0);
+		test.initailizeModel();
+		test.opt();
+		
+	}
+
+}

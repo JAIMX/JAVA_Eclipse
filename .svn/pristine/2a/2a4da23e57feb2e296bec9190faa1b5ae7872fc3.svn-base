@@ -1,0 +1,70 @@
+import ilog.concert.IloException;
+import ilog.concert.IloIntVar;
+import ilog.concert.IloLinearNumExpr;
+import ilog.concert.IloNumVar;
+import ilog.cplex.IloCplex;
+
+public class test {
+
+    public static void main(String[] args) {
+        try {
+            IloCplex cplex = new IloCplex();
+//            IloNumVar[] x = new IloNumVar[3];
+
+            // build model
+            IloLinearNumExpr exprObj = cplex.linearNumExpr();
+//            for (int i = 0; i < 3; i++) {
+//                x[i] = cplex.numVar(0, Double.MAX_VALUE, "x" + (i + 1));
+//            }
+            
+            double[]    lb      = {0.0, 0.0};
+            double[]    ub      = {40.0, Double.MAX_VALUE};
+            String[]    varname = {"x1", "x2"};
+            IloNumVar[] x       = cplex.numVarArray(2, lb, ub, varname);
+            IloIntVar x3=cplex.intVar(0,Integer.MAX_VALUE,"x3");
+            
+            
+            int[] parameter = { 1, 2 };
+            exprObj.add(cplex.scalProd(parameter, x));
+            exprObj.addTerm(3, x3);
+            cplex.addMaximize(exprObj);
+
+            // constraints
+            IloLinearNumExpr expr1 = cplex.linearNumExpr();
+            IloLinearNumExpr expr2 = cplex.linearNumExpr();
+            expr1.addTerm(-1, x[0]);
+            expr1.addTerm(1, x[1]);
+            expr1.addTerm(1, x3);
+            expr2.addTerm(1, x[0]);
+            expr2.addTerm(-3, x[1]);
+            expr2.addTerm(1, x3);
+            cplex.addLe(expr1, 20);
+            cplex.addLe(expr2, 30);
+//            cplex.addLe(x[0], 40);
+
+            // lp file out
+            cplex.exportModel("sample.lp");
+
+            // solve
+            boolean success = cplex.solve();
+            if (success) {
+                cplex.output().println("Solution status = " + cplex.getStatus());
+                cplex.output().println("Solution value  = " + cplex.getObjValue());
+                double xx[] = cplex.getValues(x);
+               // double reducedcost[] = cplex.getReducedCosts(x);
+                for (int i = 0; i < 2; i++) {
+                    System.out.println(x[i] + " = " + xx[i]);
+                    //System.out.println("    Reduced cost = " + reducedcost[i]);
+                }
+                System.out.println(x3 +" = "+cplex.getValue(x3));
+                
+                
+            } else {
+                System.out.println("cplex.solve() failed.");
+            }
+
+        } catch (IloException ex) {
+            System.out.println(ex);
+        }
+    }
+}

@@ -1,0 +1,231 @@
+
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.TreeSet;
+
+import edu.princeton.cs.algs4.Stopwatch;
+
+public class dpTSP {
+    double[][] distance;
+    Map<Pair, Double> optFunction;
+    Map<Pair, Integer> record;
+    int numCity;
+    HashSet<TreeSet<Integer>> allSets;
+    TreeSet<Integer> oneSet;
+    Stopwatch time;
+
+    Pair recordpair;
+
+    private class Pair {
+        int start;
+        TreeSet<Integer> set;
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + getOuterType().hashCode();
+            result = prime * result + ((set == null) ? 0 : set.hashCode());
+            result = prime * result + start;
+            return result;
+        }
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            Pair other = (Pair) obj;
+            if (!getOuterType().equals(other.getOuterType()))
+                return false;
+            if (set == null) {
+                if (other.set != null)
+                    return false;
+            } else if (!set.equals(other.set))
+                return false;
+            if (start != other.start)
+                return false;
+            return true;
+        }
+        private dpTSP getOuterType() {
+            return dpTSP.this;
+        }
+
+//        public boolean equals(Object otherObject) {
+//            if (this == otherObject)
+//                return true;
+//            if (otherObject == null)
+//                return false;
+//            if (getClass() != otherObject.getClass())
+//                return false;
+//
+//            Pair other = (Pair) otherObject;
+//            return start == other.start && set.equals(other.set);
+//        }
+//
+//        public int hashCode() {
+//            String temp = set.toString() + start;
+//            return temp.hashCode();
+//        }
+
+    }
+
+    public dpTSP(double[][] distance) {
+        this.distance = distance;
+        numCity = distance.length;
+        optFunction = new HashMap<Pair, Double>();
+        record = new HashMap<Pair, Integer>();
+        time=new Stopwatch();
+    }
+
+    public void opt() {
+
+        // initialize optFunction and record
+        Pair temp = null;
+        TreeSet<Integer> empty = new TreeSet<Integer>();
+
+        for (int i = 1; i < numCity; i++) {
+            temp = new Pair();
+            temp.start = i;
+            temp.set = empty;
+            optFunction.put(temp, distance[0][i]);
+            record.put(temp, 0);
+        }
+
+        // start the optimal process
+        for (int setSize = 1; setSize < numCity; setSize++) {
+            
+            System.out.println("setSize="+setSize);
+            
+            HashSet<TreeSet<Integer>> allSet = searchAllSets(setSize);
+            
+            System.out.println("searchAllSets done. And allSet size is "+allSet.size());
+            System.out.println(time.elapsedTime());
+            
+            for (TreeSet<Integer> set : allSet) {
+                for (int start = 0; start < numCity; start++) {
+                    
+                    //System.out.println("start="+start);
+                    
+                    if ((setSize != numCity - 1 && start == 0) || set.contains(start))
+                        continue;
+                    Pair temp2;
+                    temp2 = new Pair();
+                    temp2.start = start;
+                    temp2.set = set;
+                    optFunction.put(temp2, Double.MAX_VALUE);
+                    @SuppressWarnings("unchecked")
+                    TreeSet<Integer> setCopy = (TreeSet<Integer>) set.clone();
+
+                    for (int next : set) {
+                        setCopy.remove(next);
+                        temp = new Pair();
+                        temp.set = (TreeSet<Integer>) setCopy.clone();
+                        temp.start = next;
+
+
+                        Double tempVal = distance[start][next] + optFunction.get(temp);
+//                        temp = new Pair();
+//                        temp.set = (TreeSet<Integer>) set.clone();
+//                        temp.start = start;
+                        if (optFunction.get(temp2) > tempVal) {
+                            optFunction.put(temp2, tempVal);
+                            record.put(temp2, next);
+                        }
+                        setCopy.add(next);
+                    }
+
+                } // end start
+            }
+        }
+
+        // output
+        TreeSet<Integer> set = new TreeSet<Integer>();
+        for (int i = 1; i < numCity; i++)
+            set.add(i);
+        temp = new Pair();
+        temp.set = set;
+        temp.start = 0;
+        System.out.println("The optimal distance is " + optFunction.get(temp));
+        while (set.size() > 0) {
+            System.out.print(temp.start + "->");
+            int next = record.get(temp);
+            set.remove(next);
+            temp.start = next;
+        }
+        System.out.println(temp.start + "->0");
+    }
+
+    public HashSet<TreeSet<Integer>> searchAllSets(int setSize) {
+        allSets = new HashSet<TreeSet<Integer>>();
+        oneSet = new TreeSet<Integer>();
+        DFS(0, 0, setSize);
+        return allSets;
+
+    }
+
+    public void DFS(int chosenCity, int lastCity, int setSize) {
+        if (chosenCity == setSize) {
+            TreeSet<Integer> tempset = (TreeSet<Integer>) oneSet.clone();
+            allSets.add(tempset);
+        } else {
+            for (int i = lastCity + 1; i < numCity; i++) {
+                oneSet.add(i);
+                DFS(chosenCity + 1, i, setSize);
+                oneSet.remove(i);
+            }
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        Scanner in = new Scanner(Paths.get("tsp17.txt"));
+        int n = in.nextInt();
+        double[][] dist = new double[n][n];
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                dist[i][j] = in.nextDouble();
+            }
+        }
+
+        in.close();
+    	
+//		Scanner in = new Scanner(Paths.get("test.txt"));
+//		int n = in.nextInt();
+//		double[] x = new double[n];
+//		double[] y = new double[n];
+//
+//		for (int i = 0; i < n; i++) {
+//			x[i] = in.nextDouble();
+//			y[i] = in.nextDouble();
+//		}
+//
+//		double[][] distance = new double[n][n];
+//		for (int i = 0; i < n; i++) {
+//			for (int j = 0; j < n; j++) {
+//				distance[i][j] = Math.sqrt(Math.pow(x[i] - x[j], 2) + Math.pow(y[i] - y[j], 2));
+//			}
+//		}
+//		
+//		for(int i=0;i<n;i++){
+//			System.out.println(Arrays.toString(distance[i]));
+//		}
+
+        Stopwatch timer = new Stopwatch();
+        dpTSP test = new dpTSP(dist);
+        test.opt();
+        // HashSet<HashSet<Integer>> allSet=test.searchAllSets(2);
+        // for(HashSet<Integer> set:allSet){
+        // System.out.println(set);
+        // }
+        // System.out.println(allSet.size());
+        double time = timer.elapsedTime();
+        System.out.println("time = " + time);
+    }
+}

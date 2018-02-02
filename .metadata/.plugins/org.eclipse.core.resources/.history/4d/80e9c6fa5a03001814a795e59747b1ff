@@ -1,0 +1,5 @@
+package bap.branching;
+
+public class BranchOnServiceEdgeForAllPricingProblems {
+
+}

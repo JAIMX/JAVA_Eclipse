@@ -1,0 +1,78 @@
+package mTSP_GA;
+
+import java.awt.*;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.util.ArrayList;
+
+//public class Graph extends Frame implements WindowListener {
+//	static double[] x;
+//	static double[] y;
+//	private static final int DEFAULT_WIDTH = 500;
+//	private static final int DEFAULT_HEIGHT = 500;
+//	ArrayList<Individual> firstFront;
+//
+//	public Graph(ArrayList<Individual> firstFront, String title) {
+//		super(title);
+//		this.firstFront = firstFront;
+//		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+//		setVisible(true);
+//		this.addWindowListener(this);
+//	}
+//
+//	public void windowClosing(WindowEvent e) {
+//		System.out.println("windowClosing() method");
+//		System.exit(0);
+//	}
+//
+//	public void windowClosed(WindowEvent e) {
+//	}
+//
+//	public void windowActivated(WindowEvent e) {
+//	}
+//
+//	public void windowDeactivated(WindowEvent e) {
+//	}
+//
+//	public void windowIconified(WindowEvent e) {
+//		System.out.println("windowIconified() method");
+//	}
+//
+//	public void windowDeiconified(WindowEvent e) {
+//		System.out.println("windowDeiconified() method");
+//	}
+//
+//	public void windowOpened(WindowEvent e) {
+//		System.out.println("windowOpened() method");
+//	}
+//
+//	public void paint(Graphics g) {
+//
+//		System.out.println(firstFront.size());
+//
+//		for (int i = 0; i < firstFront.size(); i++) {
+//			double x = firstFront.get(i).getFitness1();
+//			double y = firstFront.get(i).getFitness2();
+//			if (x <= 50 && y <= 50) {
+//				g.drawOval((int) x, (int) y , 1, 1);
+//			}
+//
+//		}
+//
+//	}
+//
+//	public Dimension getPreferredSize() {
+//		return new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+//	}
+//
+//}
+
+public class Graph extends Frame implements WindowListener {
+	static double[] x;
+	static double[] y;
+	private static final int DEFAULT_WIDTH = 500;
+	private static final int DEFAULT_HEIGHT = 500;
+	ArrayList<Individual> firstFront;
+	
+	
+}

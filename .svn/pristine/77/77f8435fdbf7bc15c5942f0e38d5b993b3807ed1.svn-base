@@ -1,0 +1,254 @@
+import java.util.Arrays;
+import java.util.HashMap;
+
+import ilog.concert.*;
+import ilog.cplex.*;
+
+public class Bender_Callback {
+
+	/**
+	 * Minimize Z=c'*y+f'x s.t A*y+B*x>=b y>=0 X in {0,1}
+	 */
+
+	static final double FUZZ = 1.0e-7;
+
+	IloCplex master;
+	IloCplex sub;
+	IloNumVar[] y;
+	IloIntVar[] x;
+	IloNumVar z;
+	double[] c, f, b;
+	double[][] A, B;
+	int numX, numY, numConstraint;
+	double[] yValues; // subproblem y values
+	IloRange[] subConstraint;
+
+	/*
+	 * To compute both optimality and feasibility cuts, we will need to multiply the
+	 * right-hand sides of the subproblem constraints (including both constant terms
+	 * and terms involving master problem variables) by the corresponding subproblem
+	 * dual values (obtained either directly, if the subproblem is optimized, or via
+	 * a Farkas certificate if the subproblem is infeasible). To facilitate the
+	 * computations, we will construct an instance of IloNumExpr for each right-hand
+	 * side, incorporating both scalars and master variables.
+	 *
+	 * Since CPLEX returns the Farkas certificate in no particular order (in
+	 * particular, NOT in the order the subproblem constraints are created), we need
+	 * to be able to access the IloNumExpr instances in the same arbitrary order
+	 * used by the Farkas certificate. To do that, we will store them in a map keyed
+	 * by the subproblem constraints themselves (which we will store in arrays).
+	 */
+
+	HashMap<IloConstraint, IloNumExpr> rhs;
+
+	public Bender_Callback(double[] c, double[] f, double[] b, double[][] A, double[][] B) throws IloException {
+		numY = c.length;
+		numX = f.length;
+		numConstraint = A.length;
+
+		this.c = Arrays.copyOf(c, c.length);
+		this.f = Arrays.copyOf(f, f.length);
+		this.b = Arrays.copyOf(b, b.length);
+		
+		this.A=new double[numConstraint][numY];
+		this.B=new double[numConstraint][numX];
+		for (int i = 0; i < numConstraint; i++) {
+//			System.arraycopy(A[i], 0, this.A[i], 0, numY);
+//			System.arraycopy(B[i], 0, this.B[i], 0, numX);
+			this.A[i] = Arrays.copyOf(A[i], A[i].length);
+			this.B[i] = Arrays.copyOf(B[i], B[i].length);
+		}
+		rhs=new HashMap<IloConstraint, IloNumExpr>();
+
+		// set up the master problem(which initially has no constraint)
+		master = new IloCplex();
+		BuildMaster();
+		master.setOut(null);
+//		System.out.println("Initial master is "+master.toString());
+		master.use(new BendersCallback());
+
+		// set up the subproblem
+		sub = new IloCplex();
+		y = sub.numVarArray(numY, 0, Double.MAX_VALUE);
+
+		sub.addMinimize(sub.scalProd(c, y));
+		// constrain to be satisfied -- record the constraints for use later
+		subConstraint = new IloRange[numConstraint];
+		IloLinearNumExpr expr = sub.linearNumExpr();
+
+		// add constraints (initially all zero, which makes the subproblem
+		// infeasible)
+		// -- record the constraints for use later
+		// -- also map each constraint to the corresponding binary variable in the
+		// master (for decoding Farkas certificates)
+		for (int row = 0; row < numConstraint; row++) {
+			expr.clear();
+			expr = sub.scalProd(A[row], y);
+			subConstraint[row] = sub.addGe(expr, 0, "subConstraint_" + row);
+			rhs.put(subConstraint[row], master.diff(b[row], master.scalProd(B[row], x)));
+		}
+
+//		System.out.println("initial subproblem is "+sub.toString());
+		// disable presolving of the subproblem (if the presolver realizes the
+		// subproblem is infeasible, we do not get a dual ray)
+		sub.setParam(IloCplex.BooleanParam.PreInd, false);
+		// force use of the dual simplex algorithm to get a Farkas certificate
+		sub.setParam(IloCplex.IntParam.RootAlg, 2);
+		// suppress subproblem output to reduce clutter
+		sub.setOut(null);
+
+	}
+
+	public void BuildMaster() throws IloException {
+		x = master.intVarArray(numX, 0, 1);
+		z = master.numVar(Double.MIN_VALUE, Double.MAX_VALUE, "ArificialVar");
+		master.addMinimize(master.sum(z, master.scalProd(f, x)), "Obj");
+	}
+
+	/**
+	 * BendersCallback implements a lazy constraint callback that uses the warehouse
+	 * selection decisions in a proposed new incumbent solution to the master
+	 * problem to solve the subproblem.
+	 *
+	 * If the subproblem is optimized and the subproblem objective cost matches the
+	 * incumbent's estimated flow cost (to within rounding tolerance), the callback
+	 * exits without adding a constraint (resulting in the incumbent being accepted
+	 * in the master problem).
+	 *
+	 * If the subproblem is optimized but the incumbent's estimated flow cost
+	 * underestimates the true flow cost, the callback adds an optimality cut
+	 * (eliminating the proposed incumbent).
+	 *
+	 * If the subproblem proves to be infeasible, the callback adds a feasibility
+	 * cut (eliminating the proposed incumbent).
+	 *
+	 * Those should be the only possible outcomes. If something else happens
+	 * (subproblem unbounded or unsolved), the callback writes a message to stderr
+	 * and punts.
+	 */
+
+	private class BendersCallback extends IloCplex.LazyConstraintCallback {
+
+		protected void main() throws IloException {
+			double zMaster = getValue(z);
+			double[] xValue = getValues(x);
+//			
+//			System.out.println("In master: z= "+zMaster);
+//			System.out.println("x= "+Arrays.toString(xValue));
+
+			// set the supply constraint right-hand sides in the subproblem
+			for (int row = 0; row < numConstraint; row++) {
+				double temp = 0;
+				for (int i = 0; i < numX; i++) {
+					temp += B[row][i] * xValue[i];
+				}
+				subConstraint[row].setLB(b[row] - temp);
+			}
+			
+//			System.out.println("Now subproblem is "+sub.toString());
+
+			// solve the subproblem
+			sub.solve();
+			IloCplex.Status status = sub.getStatus();
+			IloNumExpr expr = master.numExpr();
+			
+//			System.out.println("The subproblem is "+status.toString());
+
+			if (status == IloCplex.Status.Infeasible) {
+				// subproblem is infeasible -- add a feasibility cut
+				// first step: get a Farkas certificate, corresponding to a dual ray
+				// along which the dual is unbounded
+
+				IloConstraint[] constraints = new IloConstraint[numConstraint];
+				double[] coefficients = new double[numConstraint];
+				sub.dualFarkas(constraints, coefficients);
+
+				for (int row = 0; row < numConstraint; row++) {
+					IloConstraint c = subConstraint[row];
+					expr = master.sum(expr, master.prod(coefficients[row], rhs.get(c)));
+				}
+
+				// add a feasibility cut
+				IloConstraint r = add(master.le(expr, 0));
+				System.out.println("\n>>> Adding feasibility cut: " + r + "\n");
+			} else if (status == IloCplex.Status.Optimal) {
+				if (zMaster < sub.getObjValue() - FUZZ) {
+
+					// the master problem surrogate variable underestimates the actual
+					// flow cost -- add an optimality cut
+					double[] mu = sub.getDuals(subConstraint);
+					
+//					System.out.println("mu= "+Arrays.toString(mu));
+
+					for (int row = 0; row < numConstraint; row++) {
+						expr = master.sum(expr, master.prod(mu[row], rhs.get(subConstraint[row])));
+					}
+
+					IloConstraint r = add((IloRange) master.ge(z, expr));
+					System.out.println("\n>>> Adding optimality cut: " + r + "\n");
+
+				} else {
+					System.out.println("\n>>> Accepting new incumbent with value " + getObjValue() + "\n");
+					yValues = sub.getValues(y);
+				}
+
+			} else {
+				// unexpected status -- report but do nothing
+				System.err.println("\n!!! Unexpected subproblem solution status: " + status + "\n");
+			}
+
+		}
+	}
+
+	public final void solve() throws IloException {
+
+		if (master.solve()) {
+			System.out.println("optiam obj= " + master.getObjValue());
+			double[] xValues = master.getValues(x);
+			System.out.println("x= " + Arrays.toString(xValues));
+			System.out.println("y= " + Arrays.toString(yValues));
+		}else {
+			System.out.println("The last master solve status is "+ master.getStatus().toString());
+		}
+	}
+
+	public static void main(String[] args) throws IloException {
+//		// test1
+//		double[] f = { 2, 6 };
+//		double[] c = { 2, 3 };
+//		double[] b = { 5, 4 };
+//		double[][] B = { { -1, 2 }, { 1, -3 } };
+//		double[][] A = { { 3, -1 }, { 2, 2 } };
+//		Bender_Callback test=new Bender_Callback(c, f, b, A, B);
+//		test.solve();
+		
+		
+		//test2
+		double[][] B=new double[20][15];
+		for(int i=0;i<5;i++) {
+			B[i][i]=1;
+			B[i][i+5]=1;
+			B[i][i+10]=1;
+		}
+		int column=0;
+		for(int i=5;i<20;i++) {
+			B[i][column]=-1;
+			column++;
+		}
+		
+		double[][] A=new double[20][3];
+		for(int row=5;row<20;row++) {
+			A[row][row/5-1]=1;
+		}
+
+		double[] b=new double[20];
+		for(int i=0;i<5;i++) {
+			b[i]=1;
+		}
+		
+		double[] f= {2,3,4,5,7,4,3,1,2,6,5,4,2,1,3};
+		double[] c= {2,3,3};
+		Bender_Callback test=new Bender_Callback(c, f, b, A, B);
+		test.solve();
+	}
+}

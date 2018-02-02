@@ -1,0 +1,13 @@
+package mTSP_GA;
+
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+
+public class Test {
+
+	public static void main(String[] args) throws FileNotFoundException {
+		PrintWriter out=new PrintWriter("test.txt");
+		out.print("11111");
+		out.close();
+	}
+}

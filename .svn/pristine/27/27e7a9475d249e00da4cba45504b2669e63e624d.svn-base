@@ -1,0 +1,11 @@
+\ENCODING=ISO-8859-1
+\Problem name: ilog.cplex
+
+Maximize
+ obj: 4 x1 - 2 x2 + 7 x3 - x4
+Subject To
+ c1: x1 + 5 x3 <= 10
+ c3: x1 + x2 - x3 <= 1
+ c5: 6 x1 - 5 x2 <= 0
+ c7: - x1 + 2 x3 - 2 x4 <= 3
+End

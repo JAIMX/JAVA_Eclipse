@@ -1,0 +1,57 @@
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.PriorityQueue;
+import java.util.TreeSet;
+
+public class test {
+
+    public static void main(String[] args) {
+        
+//        Comparator<Integer> sort;
+//        sort=new Comparator<Integer>() {
+//            
+//            @Override
+//            public int compare(Integer o1, Integer o2) {
+//                // TODO Auto-generated method stub
+//                return o2-o1;
+//            }
+//        };
+//        
+//        PriorityQueue test=new PriorityQueue(1,sort);
+//        test.add(1);
+//        test.add(2);
+//        test.add(3);
+//        System.out.println(test.peek());
+    	
+//    	int[][] p1={{1,2},{3,4}};
+//    	int[][] p2=new int[2][2];
+//    	
+//    	System.arraycopy(p1, 0, p2, 0, 2);
+//    	System.out.println(Arrays.toString(p2[1]));
+    	
+//    	TreeSet<Integer> s1=new TreeSet<Integer>();
+//    	TreeSet<Integer> s2=new TreeSet<Integer>();
+//    	s1.add(2);
+//    	s1.add(4);
+//    	s2.add(1);
+//    	s2.add(5);
+//
+//    	System.out.println(s1.hashCode());
+//    	System.out.println(s2.hashCode());
+
+    	String test="1 2";
+    	TreeSet<Integer> treeset=new TreeSet<Integer>();
+//    	treeset.add(24);
+    	System.out.println(treeset.toString());
+//    	treeset.add(3);
+//    	treeset.add(5);
+//    	String[] array=treeset.toString().split(", ");
+//    	System.out.println(treeset.toString());
+//    	for(int i=0;i<array.length;i++){
+//    		System.out.println(array[i]+"'");
+//    	}
+    	
+    }
+}

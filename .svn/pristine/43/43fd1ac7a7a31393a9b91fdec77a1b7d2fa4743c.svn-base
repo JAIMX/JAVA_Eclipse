@@ -1,0 +1,242 @@
+package mTSP_GA;
+
+import java.util.*;
+
+public class GeneticAlgorithm {
+
+    private int populationSize;
+    private double mutationRate;
+    private double crossoverRate;
+    private int elitismCount;
+    protected int tournamentSize;
+    
+
+    public GeneticAlgorithm(int populationSize, double mutationRate, double crossoverRate) {
+        this.populationSize = populationSize;
+        this.mutationRate = mutationRate;
+        this.crossoverRate = crossoverRate;
+        this.elitismCount = elitismCount;
+        this.tournamentSize = tournamentSize;
+    }
+    
+    /**
+     * Initialize population
+     * 
+     * @param chromosomeLength1 The length of the individuals chromosome part1
+     *        chromosomeLength2 The length of the individuals chromosome part2
+     * 
+     * @return population The initial population generated
+     */
+    public Population initPopulation(int chromosomeLength1,int chromosomeLength2){
+        // Initialize population
+        Population population = new Population(this.populationSize, chromosomeLength1, chromosomeLength2);
+        population.initual();
+        population.select();
+        return population;
+    }
+    
+	/**
+	 * Check if population has met termination condition -- this termination
+	 * condition is a simple one; simply check if we've exceeded the allowed
+	 * number of generations.
+	 * 
+	 * @param generationsCount
+	 *            Number of generations passed
+	 * @param maxGenerations
+	 *            Number of generations to terminate after
+	 * @return boolean True if termination condition met, otherwise, false
+	 */
+	public boolean isTerminationConditionMet(int generationsCount, int maxGenerations) {
+		return (generationsCount > maxGenerations);
+	}
+	
+	
+	
+	/**
+	 * Selects parent for crossover: 1/2 of size*crossoverRate top are selected, 1/2 of size*crossoverRate following are selected randomly
+	 * 
+	 * @param population
+	 *            
+	 * @return The individual selected as parents
+	 */
+	public ArrayList<Individual> selectParent(Population population) {
+		List<Individual> parent=new ArrayList<Individual>();
+		int size=population.getPopulation().size();
+		int cut=(int) (size*crossoverRate/2);
+		
+		for(int i=0;i<size;i++){
+			parent.add(population.getPopulation().get(i));
+		}
+		
+		int count=(int) (size*crossoverRate/2);
+		int delIndex;
+		while(count>0){
+			delIndex=(int) (Math.random()*(size-1-cut)+cut);
+			parent.remove(delIndex);
+			size--;
+			count--;
+		}
+		
+		if(parent.size()%2!=0) parent.remove(parent.size()-1);
+		
+		return (ArrayList<Individual>) parent;
+		
+	}
+
+    public void crossoverPopulation(ArrayList<Individual> parent, Population population){
+    	while(parent.size()>0){
+    		int index1;
+    		int index2;
+    		if(parent.size()>2){
+        		index1=(int) (Math.random()*(parent.size()));
+        		index2=(int) (Math.random()*(parent.size()));
+        		while(index2==index1){
+            		index2=(int) (Math.random()*(parent.size()));
+        		}
+
+    		}else{
+        		index1=0;
+        		index2=1;
+    		}
+
+    		
+    		int[] parent1=parent.get(index1).getchromosome1();
+    		int[] parent2=parent.get(index2).getchromosome1();
+    		int chromosomeLength=parent1.length;
+    		int[] child1=new int[chromosomeLength];
+    		int[] child2=new int[chromosomeLength];
+    		
+    		Individual record1=parent.get(index1);
+    		Individual record2=parent.get(index2);
+    		parent.remove(record1);
+    		parent.remove(record2);
+    		
+//    		System.out.println(Arrays.toString(parent1));
+//    		System.out.println(Arrays.toString(parent2));
+    		
+    		//ordered crossover between parent1 and parent2
+    		index1=(int) (Math.random()*chromosomeLength);
+    		index2=index1;
+    		while(index2==index1){
+    			index2=(int) (Math.random()*chromosomeLength);
+    		}
+    		
+    		int lIndex=Math.min(index1, index2);
+    		int rIndex=Math.max(index1, index2);
+    		
+//    		System.out.println("lIndex="+lIndex);
+//    		System.out.println("rIndex="+rIndex);
+
+    		
+    		//produce child1
+    		int count=0;
+    		boolean[] record=new boolean[chromosomeLength+1];
+    		for(int i=lIndex;i<=rIndex;i++){
+    			child1[i]=parent1[i];
+    			record[child1[i]]=true;
+    			count++;
+    		}
+    		
+    		int index=rIndex+1;
+    		if(index==chromosomeLength) index=0;  		
+    		int indexx=index;
+//    		System.out.println("index="+index);
+//    		System.out.println("lIndex="+lIndex);
+    		while(count<chromosomeLength){
+    			if(!record[parent2[indexx]]){
+    				child1[index]=parent2[indexx];
+    				record[parent2[indexx]]=true;
+    				count++;
+    				index++;
+    				indexx++;
+    			}else{
+    				indexx++;
+    			}
+    			if(indexx==chromosomeLength) indexx=0;
+        		if(index==chromosomeLength) index=0;		
+    		}
+    		
+    		count=0;
+    		//produce child2
+    		record=new boolean[chromosomeLength+1];
+    		for(int i=lIndex;i<=rIndex;i++){
+    			child2[i]=parent2[i];
+    			record[child2[i]]=true;
+    			count++;
+    		}
+    		index=rIndex+1;
+    		if(index==chromosomeLength) index=0;
+    		indexx=index;
+    		while(count<chromosomeLength){
+    			if(!record[parent1[indexx]]){
+    				child2[index]=parent1[indexx];
+    				record[parent1[indexx]]=true;
+    				index++;
+    				indexx++;
+    				count++;
+    			}else{
+    				indexx++;
+    			}
+    			if(indexx==chromosomeLength) indexx=0;
+        		if(index==chromosomeLength) index=0;		
+    		}
+    		
+    		//produce all the children based on child1,child2 and all the patterns
+    		for(int[] ele:population.getPatternSet()){
+    			Individual individual=new Individual(child1, ele, -1);
+    			
+    			//System.out.println(individual.toString());
+    			
+    			population.getPopulation().add(individual);
+    			individual=new Individual(child2, ele, -1);
+    			
+    			//System.out.println(individual.toString());
+    			
+    			population.getPopulation().add(individual);
+    		}
+    		   		
+    	}
+    }
+
+    /**
+	 * Apply mutation to population
+	 * 
+	 * Because the traveling salesman problem must visit each city only once,
+	 * this form of mutation will randomly swap two genes instead of
+	 * bit-flipping a gene like in earlier examples.
+	 * 
+	 * @param population
+	 *            The population to apply mutation to
+	 * @return The mutated population
+	 */
+    public void mutatePopulation(Population population){
+    	int mutationCount=(int) (population.getPopulation().size()*mutationRate);
+    	for(int i=0;i<mutationCount;i++){
+    		int index=(int) (Math.random()*population.getPopulation().size());
+    		Individual individual=population.getPopulation().get(index);
+    		int[] part1=new int[individual.getchromosome1().length];
+    		System.arraycopy(individual.getchromosome1(), 0, part1, 0,individual.getchromosome1().length );
+    		
+    		int index1=(int) (Math.random()*part1.length);
+    		int index2=(int) (Math.random()*part1.length);
+    		
+    		while(index1==index2){
+        		index2=(int) (Math.random()*part1.length);
+    		}
+    		
+    		int temp=part1[index1];
+    		part1[index1]=part1[index2];
+    		part1[index2]=temp;
+    		Individual individual2=new Individual(part1,individual.getchromosome2(),-1);
+    		population.getPopulation().add(individual2); 		
+    	}
+    }
+    
+    public void selectPopulation(Population population){
+    	population.select();
+    }
+
+    public void addPattern(Population population,int addAmount){
+    	population.addPattern(addAmount);
+    }
+}

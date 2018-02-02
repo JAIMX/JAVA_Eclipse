@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8" ?><rss version="2.0" xml:base="http://marketplace.eclipse.org/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:og="http://ogp.me/ns#" xmlns:article="http://ogp.me/ns/article#" xmlns:book="http://ogp.me/ns/book#" xmlns:profile="http://ogp.me/ns/profile#" xmlns:video="http://ogp.me/ns/video#" xmlns:product="http://ogp.me/ns/product#" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:sioc="http://rdfs.org/sioc/ns#" xmlns:sioct="http://rdfs.org/sioc/types#" xmlns:skos="http://www.w3.org/2004/02/skos/core#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
+  <channel>
+    <title>Eclipse Plugins, Bundles and Products - Eclipse Marketplace</title>
+    <link>http://marketplace.eclipse.org/</link>
+    <description></description>
+    <language>en</language>
+     <atom:link href="http://marketplace.eclipse.org/rss.xml" rel="self" type="application/rss+xml" />
+      <item>
+    <title>JBC</title>
+    <link>http://marketplace.eclipse.org/content/jbc</link>
+    <description>&lt;div class=&quot;field field-name-field-resource-image field-type-image field-label-hidden&quot;&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;img typeof=&quot;foaf:Image&quot; class=&quot;img-responsive&quot; src=&quot;http://marketplace.eclipse.org/sites/default/files/default_images/default_2.png&quot; width=&quot;110&quot; height=&quot;80&quot; alt=&quot;&quot; /&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-shared-date-created field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Date Created:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;Wed, 2017-08-02 08:15&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-shared-date-updated field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Date Updated:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;Fri, 2018-02-02 01:57&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;a href=&quot;/search/content/%22itemis%20AG%22&quot;&gt;itemis AG&lt;/a&gt;&lt;div class=&quot;field field-name-shared-submitted-by field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Submitted by:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;a href=&quot;/user/adeutsch/listings&quot; title=&quot;Arne Deutsch&quot;&gt;Arne Deutsch&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;!-- google_ad_section_start --&gt;&lt;div class=&quot;field field-name-body field-type-text-with-summary field-label-hidden&quot;&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot; property=&quot;content:encoded&quot;&gt;&lt;p&gt;JBC is an eclipse plugin that enables the developer to view and edit files containing java byte code (*.class) inside eclipse. This is done in a way such that a specialized editor opens the .class file and displays the binary code as a textual DSL whereas keywords intersparse the byte sequences. Changing the text and saving then writes back the bytes to the .class file.&lt;/p&gt;
+&lt;p&gt;The source code can be found in github: &lt;a href=&quot;https://github.com/itemis/jbc&quot; rel=&quot;nofollow&quot;&gt;https://github.com/itemis/jbc&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Some related articles (german):&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;
+		&lt;a href=&quot;https://blogs.itemis.com/de/41-cafebabe-java-bytecode-in-eclipse&quot; rel=&quot;nofollow&quot;&gt;https://blogs.itemis.com/de/41-cafebabe-java-bytecode-in-eclipse&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+		&lt;a href=&quot;https://blogs.itemis.com/de/xtext-editor-fuer-binaere-dateien&quot; rel=&quot;nofollow&quot;&gt;https://blogs.itemis.com/de/xtext-editor-fuer-binaere-dateien&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;!-- google_ad_section_end --&gt;</description>
+     <pubDate>Wed, 02 Aug 2017 12:15:45 +0000</pubDate>
+ <dc:creator>adeutsch</dc:creator>
+ <guid isPermaLink="false">3579717 at http://marketplace.eclipse.org</guid>
+ <comments>http://marketplace.eclipse.org/content/jbc#comments</comments>
+  </item>
+  <item>
+    <title>Azure Toolkit for Eclipse</title>
+    <link>http://marketplace.eclipse.org/content/azure-toolkit-eclipse</link>
+    <description>&lt;div class=&quot;field field-name-field-resource-image field-type-image field-label-hidden&quot;&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;img typeof=&quot;foaf:Image&quot; class=&quot;img-responsive&quot; src=&quot;http://marketplace.eclipse.org/sites/default/files/azure110x80.png&quot; width=&quot;110&quot; height=&quot;80&quot; alt=&quot;&quot; /&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-shared-date-created field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Date Created:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;Tue, 2014-09-16 16:39&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-shared-date-updated field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Date Updated:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;Thu, 2018-02-01 21:20&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;a href=&quot;/search/content/%22Microsoft%20Corp.%22&quot;&gt;Microsoft Corp.&lt;/a&gt;&lt;div class=&quot;field field-name-shared-submitted-by field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Submitted by:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;a href=&quot;/user/msawicki/listings&quot; title=&quot;Martin Sawicki&quot;&gt;Martin Sawicki&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;!-- google_ad_section_start --&gt;&lt;div class=&quot;field field-name-body field-type-text-with-summary field-label-hidden&quot;&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot; property=&quot;content:encoded&quot;&gt;&lt;p&gt;The Azure Toolkit for Eclipse provides functionality that allow you to easily create, develop, configure, test, and deploy lightweight, highly available and scalable Java web apps and HDInsight Spark jobs to Microsoft Azure using the Eclipse development environment running on Mac OS, Linux and Windows. It also contains all the key Azure service API clients for Java, exposed as Eclipse libraries, including the Azure Management SDK, Storage SDK, Application Insights SDK and JDBC (for SQL Server and Azure SQL Database). Other key features of the Azure Toolkit for Eclipse include:&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;
+		quick deployment of a Java application to an Azure Web App container&lt;/li&gt;
+&lt;li&gt;
+		quick dev/test deployments of Java applications to Docker containers running within Azure Docker Host VMs, for which the plugin also provides basic management support&lt;/li&gt;
+&lt;li&gt;
+		create Spark applications for Azure HDInsight Spark Linux cluster using Java or Scala&lt;/li&gt;
+&lt;li&gt;
+		author, submit, manage, debug locally or in cluster the HDInsight Spark applications&lt;/li&gt;
+&lt;li&gt;
+		use any JVM with your cloud app, including the OpenJDK (e.g. Azul Zulu) or the Oracle JDK&lt;/li&gt;
+&lt;li&gt;
+		deploy any application server, including Tomcat, Jetty, JBoss or GlassFish; or rely on a version of Tomcat or Jetty made available in Azure by Microsoft&lt;/li&gt;
+&lt;li&gt;
+		use the Azure Explorer view to navigate and manage your Azure storage accounts (blobs, tables, queue), web apps, HDInsight (Spark) resources, Docker hosts and published Docker containers on Azure&lt;/li&gt;
+&lt;li&gt;
+		program against Azure&#039;s services such as Storage, Azure SQL Database and more, using the Azure SDK APIs for Java&lt;/li&gt;
+&lt;li&gt;
+		enable automated telemetry for your applications using Application Insights logging directly into the Azure cloud, regardless of where your application is running&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;Learn more at the &lt;a href=&quot;http://go.microsoft.com/fwlink/?LinkID=699529&quot; rel=&quot;nofollow&quot;&gt;documentation site&lt;/a&gt;, and learn more about Java on Azure in general at the &lt;a href=&quot;https://azure.microsoft.com/develop/java/&quot; rel=&quot;nofollow&quot;&gt;Azure Developer Center for Java&lt;/a&gt;. &lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;!-- google_ad_section_end --&gt;</description>
+     <pubDate>Tue, 16 Sep 2014 20:39:08 +0000</pubDate>
+ <dc:creator>msawicki</dc:creator>
+ <guid isPermaLink="false">1919278 at http://marketplace.eclipse.org</guid>
+ <comments>http://marketplace.eclipse.org/content/azure-toolkit-eclipse#comments</comments>
+  </item>
+  <item>
+    <title>iSphere for RDi 9.5+</title>
+    <link>http://marketplace.eclipse.org/content/isphere-rdi-95</link>
+    <description>&lt;div class=&quot;field field-name-field-resource-image field-type-image field-label-hidden&quot;&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;img typeof=&quot;foaf:Image&quot; class=&quot;img-responsive&quot; src=&quot;http://marketplace.eclipse.org/sites/default/files/isphere_marketplace.jpg&quot; width=&quot;110&quot; height=&quot;80&quot; alt=&quot;&quot; /&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-shared-date-created field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Date Created:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;Tue, 2017-01-10 16:11&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-shared-date-updated field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Date Updated:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;Thu, 2018-02-01 11:47&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;a href=&quot;/search/content/%22iSphere%20Project%20Team%22&quot;&gt;iSphere Project Team&lt;/a&gt;&lt;div class=&quot;field field-name-shared-submitted-by field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Submitted by:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;a href=&quot;/user/traddatz/listings&quot; title=&quot;Thomas Raddatz&quot;&gt;Thomas Raddatz&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;!-- google_ad_section_start --&gt;&lt;div class=&quot;field field-name-body field-type-text-with-summary field-label-hidden&quot;&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot; property=&quot;content:encoded&quot;&gt;&lt;p&gt;iSphere is an open source plug-in for WDSCi 7.0 and RDi 8.0+. It delivers high quality extensions for WDSC, RDP and RDi to further improve developer productivity.&lt;/p&gt;
+&lt;p&gt;IBM&#039;s current Eclipse based Integrated Development Environment (IDE) is a huge step beyond SEU, but it still lacks features available only on the green screen. That is where the iSphere Project comes into play, filling in those gaps.&lt;/p&gt;
+&lt;p&gt;Feature list:&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;
+		Binding Directory Editor&lt;/li&gt;
+&lt;li&gt;
+		Data Area Editor&lt;/li&gt;
+&lt;li&gt;
+		User Space Editor&lt;/li&gt;
+&lt;li&gt;
+		Data Queue Viewer&lt;/li&gt;
+&lt;li&gt;
+		Message File Editor&lt;/li&gt;
+&lt;li&gt;
+		Message File Compare Editor&lt;/li&gt;
+&lt;li&gt;
+		Message File Search&lt;/li&gt;
+&lt;li&gt;
+		Source File Search&lt;/li&gt;
+&lt;li&gt;
+		Source Compare/Merge Editor&lt;/li&gt;
+&lt;li&gt;
+		Spooled Files Subsystem&lt;/li&gt;
+&lt;li&gt;
+		Lpex Task Tags&lt;/li&gt;
+&lt;li&gt;
+		Host Object Decorator&lt;/li&gt;
+&lt;li&gt;
+		RSE Filter Manager&lt;/li&gt;
+&lt;li&gt;
+		Message Subsystem and Monitor&lt;/li&gt;
+&lt;li&gt;
+		Job Log Explorer&lt;/li&gt;
+&lt;li&gt;
+		Journal Explorer&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;iSphere is an Open Source project that is hosted on &lt;a href=&quot;https://sourceforge.net/projects/isphere/&quot; rel=&quot;nofollow&quot;&gt;Source Forge&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;!-- google_ad_section_end --&gt;</description>
+     <pubDate>Tue, 10 Jan 2017 21:11:59 +0000</pubDate>
+ <dc:creator>traddatz</dc:creator>
+ <guid isPermaLink="false">3248963 at http://marketplace.eclipse.org</guid>
+ <comments>http://marketplace.eclipse.org/content/isphere-rdi-95#comments</comments>
+  </item>
+  <item>
+    <title>AccuRev Plug-In for Eclipse</title>
+    <link>http://marketplace.eclipse.org/content/accurev-plug-eclipse</link>
+    <description>&lt;div class=&quot;field field-name-field-resource-image field-type-image field-label-hidden&quot;&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;img typeof=&quot;foaf:Image&quot; class=&quot;img-responsive&quot; src=&quot;http://marketplace.eclipse.org/sites/default/files/AccuRev.png&quot; width=&quot;80&quot; height=&quot;80&quot; alt=&quot;&quot; /&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-shared-date-created field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Date Created:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;Tue, 2018-01-23 04:05&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-shared-date-updated field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Date Updated:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;Thu, 2018-02-01 04:56&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;a href=&quot;/search/content/%22Micro%20Focus%20International%22&quot;&gt;Micro Focus International&lt;/a&gt;&lt;div class=&quot;field field-name-shared-submitted-by field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Submitted by:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;a href=&quot;/user/vmuruganhmd/listings&quot; title=&quot;Vignesh Murugan&quot;&gt;Vignesh Murugan&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;!-- google_ad_section_start --&gt;&lt;div class=&quot;field field-name-body field-type-text-with-summary field-label-hidden&quot;&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot; property=&quot;content:encoded&quot;&gt;&lt;p&gt;This plugin has been tested to work with AccuRev 6.0 or higher.  This plugin is free to use with our AccuRev customers and evaluators. It is fully supported and documented.  You can find additional documentation below.  The Installation and Release Notes can be found here: &lt;a href=&quot;https://supportline.microfocus.com/Documentation/books/AccuRev/Plugins/Eclipse/2016.1/eclipse-2016.1-install_release_notes-en.pdf&quot; rel=&quot;nofollow&quot;&gt;https://supportline.microfocus.com/Documentation/books/AccuRev/Plugins/E...&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;The User’s Guide can be found here:&lt;a href=&quot;http://supportline.microfocus.com/Documentation/books/AccuRev/Plugins/Eclipse/2014.1/eclipse-2014.1-users_guide-en.pdf&quot; rel=&quot;nofollow&quot;&gt;http://supportline.microfocus.com/Documentation/books/AccuRev/Plugins/Ec...&lt;/a&gt; Please note, there are no significant changes between 2014.1 and 2016.1 for the User Guide.&lt;/p&gt;
+&lt;p&gt;By downloading, you agree that the AccuRev plugins are subject to the terms and conditions of the applicable EULA for your AccuRev license.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;!-- google_ad_section_end --&gt;</description>
+     <pubDate>Tue, 23 Jan 2018 09:05:45 +0000</pubDate>
+ <dc:creator>vmuruganhmd</dc:creator>
+ <guid isPermaLink="false">3887757 at http://marketplace.eclipse.org</guid>
+ <comments>http://marketplace.eclipse.org/content/accurev-plug-eclipse#comments</comments>
+  </item>
+  <item>
+    <title>MetaModelAgent for Papyrus and IBM RSA</title>
+    <link>http://marketplace.eclipse.org/content/metamodelagent-papyrus-and-ibm-rsa</link>
+    <description>&lt;div class=&quot;field field-name-field-resource-image field-type-image field-label-hidden&quot;&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;img typeof=&quot;foaf:Image&quot; class=&quot;img-responsive&quot; src=&quot;http://marketplace.eclipse.org/sites/default/files/MMA_Eclipse_MarketPlace_Icon.png&quot; width=&quot;110&quot; height=&quot;80&quot; alt=&quot;&quot; /&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-shared-date-created field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Date Created:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;Mon, 2011-05-16 08:36&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-shared-date-updated field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Date Updated:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;Thu, 2018-02-01 04:04&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;a href=&quot;/search/content/%22Adocus%20AB%22&quot;&gt;Adocus AB&lt;/a&gt;&lt;div class=&quot;field field-name-shared-submitted-by field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Submitted by:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;a href=&quot;/user/twiman/listings&quot; title=&quot;Thomas Wiman&quot;&gt;Thomas Wiman&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;!-- google_ad_section_start --&gt;&lt;div class=&quot;field field-name-body field-type-text-with-summary field-label-hidden&quot;&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot; property=&quot;content:encoded&quot;&gt;&lt;p&gt;&lt;em&gt;&lt;strong&gt;[IMPORTANT: Install button is for Papyrus 3.x users. Please use update site &lt;a href=&quot;http://www.metamodelagent.com/update&quot; rel=&quot;nofollow&quot;&gt;http://www.metamodelagent.com/update&lt;/a&gt; for Papyrus 2.0.x and IBM RSA]&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;A &lt;em&gt;Domain-specific Modeling Language (DSML)&lt;/em&gt; is a modeling language tailored for a very specific and limited domain. A DSML is a combination of visual presentation of entities from the domain as well as a set of rules that defines their behavior. A well-defined DSML should help you to express whatever needed in the specific domain in a correct manner without disturbance from concepts irrelevant for the domain.&lt;/p&gt;
+&lt;p&gt;A &lt;em&gt;UML-based DSML&lt;/em&gt; is a combination of extension and limitation of the Unified Modeling Language (UML) for a specific modeling domain. A UML-based DSML does often, but not always, include UML-profile(s) with stereotypes and additional properties, as well as new graphics (icons and symbols). A UML-based DSML should also contains a set of constraints on how UML and the extensions should be applied in terms of model structure, element and relationship usage, valid property values, diagram placement and diagram content etc.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;MetaModelAgent&lt;/strong&gt; is a modeling tool extension that makes it very simple to define your own DSML and make it available for the modelers through powerful UI additions to open source &lt;em&gt;Papyrus&lt;/em&gt; or &lt;em&gt;IBM Rational Software Architect (RSA)&lt;/em&gt;. Key features:&lt;/p&gt;
+&lt;ul&gt;&lt;li type=&quot;disc&quot;&gt;
+&lt;dl&gt;&lt;dt&gt;
+				&lt;strong&gt;Agile DSML Configuration&lt;/strong&gt;&lt;/dt&gt;
+&lt;dd&gt;
+				MetaModelAgent makes it very easy to setup your own DSML-specific modeling tool using a UML-based metamodels as a single source of information. There is no need at all for any API-based programmatic extensions.&lt;/dd&gt;
+&lt;/dl&gt;&lt;/li&gt;
+&lt;li type=&quot;disc&quot;&gt;
+&lt;dl&gt;&lt;dt&gt;
+				&lt;strong&gt;Accelerated DSML-modeling&lt;/strong&gt;&lt;/dt&gt;
+&lt;dd&gt;
+				MetaModelAgent uses your own metamodel to provide a DSML-specific modeling tool with user-friendly context-sensitive wizards, views, menus and palettes. This makes it possible to develop and validate high-quality DSML-models rapidly without the risk of introducing violations to the DSML.&lt;/dd&gt;
+&lt;/dl&gt;&lt;/li&gt;
+&lt;li type=&quot;disc&quot;&gt;
+&lt;dl&gt;&lt;dt&gt;
+				&lt;strong&gt;Powerful analysis capabilities&lt;/strong&gt;&lt;/dt&gt;
+&lt;dd&gt;
+				MetaModelAgent brings several additional views to RSA and Papyrus to support advanzed model analysis; table view of element properties, matrix view of relationships, tree view of relationship chains and several chart views for management overviews.&lt;/dd&gt;
+&lt;/dl&gt;&lt;/li&gt;
+&lt;li type=&quot;disc&quot;&gt;
+&lt;dl&gt;&lt;dt&gt;
+				&lt;strong&gt;Makes you models available for anyone&lt;/strong&gt;&lt;/dt&gt;
+&lt;dd&gt;
+				MetaModelAgent generates easy-navigable model reports of your DSML-models and DSML-guidelines in HTML-format. This makes your models accessible by anyone through a standard web browser.&lt;/dd&gt;
+&lt;/dl&gt;&lt;/li&gt;
+&lt;li type=&quot;disc&quot;&gt;
+&lt;dl&gt;&lt;dt&gt;
+				&lt;strong&gt;Flexible and Scalable&lt;/strong&gt;&lt;/dt&gt;
+&lt;dd&gt;
+				MetaModelAgent supports any kind of UML-based DSML of any size, independent of any development process. MetaModelAgent supports any number of different DSML-guidelines and models simultaneously in the same environment.&lt;/dd&gt;
+&lt;/dl&gt;&lt;/li&gt;
+&lt;li type=&quot;disc&quot;&gt;
+&lt;dl&gt;&lt;dt&gt;
+				&lt;strong&gt;Support for standard UML&lt;/strong&gt;&lt;/dt&gt;
+&lt;dd&gt;
+				MetaModelAgent has embedded guidelines for standard UML that make its possible to use MetaModelAgent´s unique UI extensions without the need of any DSML-definition.&lt;/dd&gt;
+&lt;/dl&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;Powerful and easy to use, MetaModelAgent allows your organization to create high-quality DSML-models faster than ever before. MetaModelAgent requires and supports:&lt;/p&gt;
+&lt;ul&gt;&lt;li type=&quot;disc&quot;&gt;
+		Papyrus 3.x (Oxygen)&lt;/li&gt;
+&lt;li type=&quot;disc&quot;&gt;
+		Papyrus 2.0.x (Neon)&lt;/li&gt;
+&lt;li type=&quot;disc&quot;&gt;
+		Papyrus RT 1.0 (Oxygen)&lt;/li&gt;
+&lt;li type=&quot;disc&quot;&gt;
+		IBM Rational Software Architect (RSA) 8.0 and later, all editions including RSA RTE (MetaModelAgent is certified as &lt;em&gt;Ready for IBM Rational Software&lt;/em&gt;)&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;MetaModelAgent is available for installation from the update site: &lt;a href=&quot;http://www.metamodelagent.com/update&quot; rel=&quot;nofollow&quot;&gt;http://www.metamodelagent.com/update&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;To use the MetaModelAgent functionality after installation you will have to order a limited FREE license, request a 30-day trial license or purchase an unlimited license. For more information see &lt;a href=&quot;http://www.adocus.com/en/products/metamodelagent&quot; rel=&quot;nofollow&quot;&gt;Adocus company website&lt;/a&gt; and &lt;a href=&quot;http://www.metamodelagent.com&quot; rel=&quot;nofollow&quot;&gt;MetaModelAgent product website&lt;/a&gt;.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;!-- google_ad_section_end --&gt;</description>
+     <pubDate>Mon, 16 May 2011 12:36:00 +0000</pubDate>
+ <dc:creator>twiman</dc:creator>
+ <guid isPermaLink="false">53864 at http://marketplace.eclipse.org</guid>
+ <comments>http://marketplace.eclipse.org/content/metamodelagent-papyrus-and-ibm-rsa#comments</comments>
+  </item>
+  <item>
+    <title>Live Coding in Python</title>
+    <link>http://marketplace.eclipse.org/content/live-coding-python</link>
+    <description>&lt;div class=&quot;field field-name-field-resource-image field-type-image field-label-hidden&quot;&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;img typeof=&quot;foaf:Image&quot; class=&quot;img-responsive&quot; src=&quot;http://marketplace.eclipse.org/sites/default/files/gravatar.jpg&quot; width=&quot;80&quot; height=&quot;80&quot; alt=&quot;&quot; /&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-shared-date-created field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Date Created:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;Fri, 2016-04-01 00:12&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-shared-date-updated field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Date Updated:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;Wed, 2018-01-31 22:53&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;a href=&quot;/search/content/%22Don%20Kirkby%22&quot;&gt;Don Kirkby&lt;/a&gt;&lt;div class=&quot;field field-name-shared-submitted-by field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Submitted by:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;a href=&quot;/user/dkirkby/listings&quot; title=&quot;Don Kirkby&quot;&gt;Don Kirkby&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;!-- google_ad_section_start --&gt;&lt;div class=&quot;field field-name-body field-type-text-with-summary field-label-hidden&quot;&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot; property=&quot;content:encoded&quot;&gt;&lt;p&gt;Run your Python code while you type. Displays variable state or turtle graphics that are updated as you type your code. Requires PyDev, so &lt;strong&gt;install PyDev first&lt;/strong&gt;.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;!-- google_ad_section_end --&gt;</description>
+     <pubDate>Fri, 01 Apr 2016 04:12:00 +0000</pubDate>
+ <dc:creator>dkirkby</dc:creator>
+ <guid isPermaLink="false">2806369 at http://marketplace.eclipse.org</guid>
+ <comments>http://marketplace.eclipse.org/content/live-coding-python#comments</comments>
+  </item>
+  <item>
+    <title>Appium Studio for Eclipse</title>
+    <link>http://marketplace.eclipse.org/content/appium-studio-eclipse</link>
+    <description>&lt;div class=&quot;field field-name-field-resource-image field-type-image field-label-hidden&quot;&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;img typeof=&quot;foaf:Image&quot; class=&quot;img-responsive&quot; src=&quot;http://marketplace.eclipse.org/sites/default/files/appium%20studio%20for%20eclipse%20logo.png&quot; width=&quot;110&quot; height=&quot;80&quot; alt=&quot;&quot; /&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-shared-date-created field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Date Created:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;Thu, 2018-01-18 02:59&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-shared-date-updated field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Date Updated:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;Wed, 2018-01-31 08:44&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;a href=&quot;/search/content/%22Experitest%22&quot;&gt;Experitest&lt;/a&gt;&lt;div class=&quot;field field-name-shared-submitted-by field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Submitted by:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;a href=&quot;/user/rzamir/listings&quot; title=&quot;ruth zamir&quot;&gt;ruth zamir&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;!-- google_ad_section_start --&gt;&lt;div class=&quot;field field-name-body field-type-text-with-summary field-label-hidden&quot;&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot; property=&quot;content:encoded&quot;&gt;&lt;h2&gt;
+	Easily develop, automate, analyze and debug your tests on physical devices and browsers&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;End-to-end web &amp;amp; mobile test automation from Eclipse&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Perform test development, automation project development, and test execution on remote devices in the Digital Device Lab with a single tool with rich views and editors fully embedded in Eclipse for digital test automation.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Immediate visual feedback&lt;/strong&gt;&lt;br /&gt;
+	Easily create robust and maintainable tests with a dynamic device reflection that provides immediate visual feedback on all actions. Project development is further streamlined with code snippets and automatically generated Eclipse framework assets such as properties &amp;amp; configuration files.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Powerful object identification&lt;/strong&gt;&lt;br /&gt;
+	Enjoy powerful object identification and management, that identify objects by their native/web properties, including image/OCR and customized UI. Write scripts with drag and drop script editor.&lt;/p&gt;
+&lt;p&gt;
+	&lt;strong&gt;Create stable automation&lt;/strong&gt;&lt;br /&gt;
+	Leverage pre-configured Eclipse project framework assets for mobile including code snippets, properties &amp;amp; configuration files to reduce errors and easily create stable projects.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Maximize your test coverage rates&lt;/strong&gt;&lt;br /&gt;
+	Achieve high coverage rates by testing outside of your app (SMS, network, settings, Facebook) and 3rd party integrations for complex use cases such as code scanning or fingerprint authentication. Guaranteed rapid version and beta support.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Seamlessly integrate with any testing &amp;amp; CI environment&lt;/strong&gt;&lt;br /&gt;
+	Create Appium, Selenium and SeeTest test automation, and integrate with any Eclipse plug-in such as Python or Ruby. Integrate with any continuous integration environment to trigger continuous testing as part of the CI process.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Parallel test execution&lt;/strong&gt;&lt;br /&gt;
+	Intelligent grid execution management allows you to see executions in the real-time view of all executions. Dynamically schedule tests, executions, and distribution. Run multiple CI projects in parallel (multiple applications).&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Appium Studio for Eclipse&lt;/strong&gt; allows you to develop and execute tests on remote devices located in the &lt;strong&gt;&lt;a href=&quot;https://experitest.com/mobile-cloud-testing/seetestcloud-online/?utm_source=Eclipse_marketplace&quot; rel=&quot;nofollow&quot;&gt;SaaS Digital Assurance Lab&lt;/a&gt;.&lt;/strong&gt; The Digital Assurance Lab provides access hundreds of browsers &amp;amp; mobile devices (physical / emulated) hosted in Experitest data centers, from anywhere at anytime. &lt;a href=&quot;https://goo.gl/MSFcFb&quot; rel=&quot;nofollow&quot;&gt;Register&lt;/a&gt; to the Digital Assurance lab for &lt;a href=&quot;https://goo.gl/MSFcFb&quot; rel=&quot;nofollow&quot;&gt;free&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;30 day free trial.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;!-- google_ad_section_end --&gt;</description>
+     <pubDate>Thu, 18 Jan 2018 07:59:34 +0000</pubDate>
+ <dc:creator>rzamir</dc:creator>
+ <guid isPermaLink="false">3879315 at http://marketplace.eclipse.org</guid>
+ <comments>http://marketplace.eclipse.org/content/appium-studio-eclipse#comments</comments>
+  </item>
+  <item>
+    <title>Workspace Mechanic</title>
+    <link>http://marketplace.eclipse.org/content/workspace-mechanic</link>
+    <description>&lt;div class=&quot;field field-name-field-resource-image field-type-image field-label-hidden&quot;&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;img typeof=&quot;foaf:Image&quot; class=&quot;img-responsive&quot; src=&quot;http://marketplace.eclipse.org/sites/default/files/default_images/default_2.png&quot; width=&quot;110&quot; height=&quot;80&quot; alt=&quot;&quot; /&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-shared-date-created field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Date Created:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;Thu, 2014-10-16 05:49&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-shared-date-updated field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Date Updated:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;Wed, 2018-01-31 04:53&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;a href=&quot;/search/content/%22EclipseLabs%22&quot;&gt;EclipseLabs&lt;/a&gt;&lt;div class=&quot;field field-name-shared-submitted-by field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Submitted by:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;a href=&quot;/user/nbartlett/listings&quot; title=&quot;Neil Bartlett&quot;&gt;Neil Bartlett&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;!-- google_ad_section_start --&gt;&lt;div class=&quot;field field-name-body field-type-text-with-summary field-label-hidden&quot;&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot; property=&quot;content:encoded&quot;&gt;&lt;p&gt;The Workspace Mechanic automates maintenance of your Eclipse environment by tweaking preferences, adding extension locations, and so on. You can use it to: * Create a consistent environment among groups as large as the entire company, your local team, or even among your own many workspaces * Save time setting up new workspaces * Create tasks that ensure your favorite new preferences are applied to all your current and future workspaces. (This is one of our favorite features!)&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;!-- google_ad_section_end --&gt;</description>
+     <pubDate>Thu, 16 Oct 2014 09:49:19 +0000</pubDate>
+ <dc:creator>nbartlett</dc:creator>
+ <guid isPermaLink="false">1976579 at http://marketplace.eclipse.org</guid>
+ <comments>http://marketplace.eclipse.org/content/workspace-mechanic#comments</comments>
+  </item>
+  <item>
+    <title>Eclipse C/C++ IDE</title>
+    <link>http://marketplace.eclipse.org/content/eclipse-cc-ide</link>
+    <description>&lt;div class=&quot;field field-name-field-resource-image field-type-image field-label-hidden&quot;&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;img typeof=&quot;foaf:Image&quot; class=&quot;img-responsive&quot; src=&quot;http://marketplace.eclipse.org/sites/default/files/cdt_logo_icon_0_0.png&quot; width=&quot;80&quot; height=&quot;80&quot; alt=&quot;&quot; /&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-shared-date-created field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Date Created:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;Tue, 2013-12-17 03:24&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-shared-date-updated field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Date Updated:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;Tue, 2018-01-30 13:08&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;a href=&quot;/search/content/%22Eclipse%20CDT%22&quot;&gt;Eclipse CDT&lt;/a&gt;&lt;div class=&quot;field field-name-shared-submitted-by field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Submitted by:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;a href=&quot;/user/dschaefer/listings&quot; title=&quot;Doug Schaefer&quot;&gt;Doug Schaefer&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;!-- google_ad_section_start --&gt;&lt;div class=&quot;field field-name-body field-type-text-with-summary field-label-hidden&quot;&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot; property=&quot;content:encoded&quot;&gt;&lt;p&gt;Eclipse CDT (C/C++ Development Tooling) &lt;a href=&quot;http://eclipse.org/cdt/&quot; rel=&quot;nofollow&quot;&gt;http://eclipse.org/cdt/&lt;/a&gt; is top level project of Eclipse Foundation. Get it as standalone Eclipse IDE for C/C++ Developers from &lt;a href=&quot;http://www.eclipse.org/downloads/&quot; rel=&quot;nofollow&quot;&gt;http://www.eclipse.org/downloads/&lt;/a&gt; . or install using marketplace client (e.g. drag-and-drop Install button). Listed in &lt;a href=&quot;/content/nodeclipse-plugins-list&quot; title=&quot;Nodeclipse Plugins List&quot; rel=&quot;nofollow&quot;&gt;Nodeclipse Plugins List&lt;/a&gt; &lt;a href=&quot;http://with-eclipse.github.io/&quot; target=&quot;_blank&quot; rel=&quot;nofollow&quot;&gt;&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;!-- google_ad_section_end --&gt;</description>
+     <pubDate>Tue, 17 Dec 2013 08:24:35 +0000</pubDate>
+ <dc:creator>dschaefer</dc:creator>
+ <guid isPermaLink="false">1373403 at http://marketplace.eclipse.org</guid>
+ <comments>http://marketplace.eclipse.org/content/eclipse-cc-ide#comments</comments>
+  </item>
+  <item>
+    <title>The Complete Eclipse C/C++ IDE</title>
+    <link>http://marketplace.eclipse.org/content/complete-eclipse-cc-ide</link>
+    <description>&lt;div class=&quot;field field-name-field-resource-image field-type-image field-label-hidden&quot;&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;img typeof=&quot;foaf:Image&quot; class=&quot;img-responsive&quot; src=&quot;http://marketplace.eclipse.org/sites/default/files/cdt_logo_icon.png&quot; width=&quot;107&quot; height=&quot;80&quot; alt=&quot;&quot; /&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-shared-date-created field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Date Created:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;Thu, 2017-11-30 11:53&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-shared-date-updated field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Date Updated:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;Tue, 2018-01-30 13:06&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;a href=&quot;/search/content/%22Eclipse%20CDT%22&quot;&gt;Eclipse CDT&lt;/a&gt;&lt;div class=&quot;field field-name-shared-submitted-by field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Submitted by:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;a href=&quot;/user/dschaefer/listings&quot; title=&quot;Doug Schaefer&quot;&gt;Doug Schaefer&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;!-- google_ad_section_start --&gt;&lt;div class=&quot;field field-name-body field-type-text-with-summary field-label-hidden&quot;&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot; property=&quot;content:encoded&quot;&gt;&lt;p&gt;There are a number of features in preview and experimental for the C/C++ IDE. These are not included in the C/C++ IDE Package.&lt;/p&gt;
+&lt;p&gt;This entry adds those features. This includes support for CMake, Qt, Arduino as well as the Launch Bar which is needed to properly use those features.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;!-- google_ad_section_end --&gt;</description>
+     <pubDate>Thu, 30 Nov 2017 16:53:57 +0000</pubDate>
+ <dc:creator>dschaefer</dc:creator>
+ <guid isPermaLink="false">3799227 at http://marketplace.eclipse.org</guid>
+ <comments>http://marketplace.eclipse.org/content/complete-eclipse-cc-ide#comments</comments>
+  </item>
+  </channel>
+</rss>

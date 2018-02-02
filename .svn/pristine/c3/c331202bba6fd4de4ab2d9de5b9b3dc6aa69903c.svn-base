@@ -1,0 +1,345 @@
+package mTSP_GA;
+
+import java.util.*;
+
+
+public class Population {
+	
+	private List<Individual> population;
+	private HashSet<int[]> patternSet;
+	private int populationSize;
+	private int chromosomeLength1;
+	private int chromosomeLength2;
+	private int firstFrontIndex;
+
+    public Population(int populationSize,int chromosomeLength1,int chromosomeLength2){
+        this.populationSize=populationSize;
+        this.chromosomeLength1=chromosomeLength1;
+        this.chromosomeLength2=chromosomeLength2;
+        population=new ArrayList<Individual>();
+        patternSet=new HashSet<int[]>();
+        
+    }
+    
+    public void initual(){
+    	//????????????????????????????????????????????
+    	// initualize part2
+    	//int numPart2=(int) Math.sqrt(populationSize);
+    	int numPart2=30;
+    	int LB=chromosomeLength1/chromosomeLength2-5;
+    	int UB=chromosomeLength1/chromosomeLength2+6;
+    	
+    	for(int i=0;i<numPart2;i++){
+    		
+        	int[] part2=new int[chromosomeLength2];	
+        	int left=chromosomeLength1;
+        	for(int j=0;j<chromosomeLength2-1;j++){
+        		part2[j]=(int) (Math.min(Math.random()*(UB-LB)+LB, left-(chromosomeLength2-1-j)*LB));
+        		if(part2[j]==0) part2[j]=1;
+        		left=left-part2[j];
+        	}
+        	part2[chromosomeLength2-1]=left;
+   	
+        	patternSet.add(part2);
+    	}
+    	
+//    	for(int[] ele:patternSet){
+//        	System.out.println(Arrays.toString(ele)); 
+//    	}
+    	
+    	//initualize part1
+    	for(int numPart1=0;numPart1<populationSize;numPart1++){
+        	int[] part1=new int[chromosomeLength1];
+        	for(int i=1;i<=chromosomeLength1;i++){
+        		int position=(int) (Math.random()*chromosomeLength1);
+        		while(part1[position]!=0){
+        			position++;
+        			if(position==chromosomeLength1) position=0;		
+        		}
+        		part1[position]=i;
+        	}
+        	//System.out.println(Arrays.toString(part1));
+        	
+        	//combine part1 to every part2
+        	for(int[] part2:patternSet){
+        		Individual individual=new Individual(part1,part2,-1);
+//        		System.out.println(individual.getFitness1());
+        		population.add(individual);
+        		individual.setPopulationIndex(population.size()-1);
+        
+        	}
+    	}
+
+//    	System.out.println();
+//    	System.out.println("number of pattern="+patternSet.size());
+//    	System.out.println("population size="+populationSize);
+//    	System.out.println(population.size());  	
+
+    }
+    
+    public void addPattern(int number){
+    	
+    	int LB=chromosomeLength1/chromosomeLength2-5;
+    	int UB=chromosomeLength1/chromosomeLength2+6;
+    	
+    	for(int i=0;i<number;i++){
+    		
+        	int[] part2=new int[chromosomeLength2];	
+        	int left=chromosomeLength1;
+        	for(int j=0;j<chromosomeLength2-1;j++){
+        		part2[j]=(int) (Math.min(Math.random()*(UB-LB)+LB, left-(chromosomeLength2-1-j)*LB));
+        		if(part2[j]==0) part2[j]=1;
+        		left=left-part2[j];
+        	}
+        	part2[chromosomeLength2-1]=left;
+        	
+        	HashSet<int[]> patternSet2=new HashSet<int[]>();
+        	int count=1;
+        	for(int[] ele:patternSet){
+        		if(count!=1){
+        			patternSet2.add(ele);
+        		}
+        		count++;
+        	}
+        	
+        	patternSet=patternSet2;
+        	patternSet.add(part2);
+    	}
+    }
+
+    public void select(){
+    	assert(populationSize<population.size()):"There is no need to select to reduce the size of populations";
+    	
+    	// non-dominated sort
+    	List<HashSet<Integer>> S=new ArrayList<HashSet<Integer>>();
+    	int[] n=new int[population.size()];	
+    	List<Individual> newPopulation=new ArrayList<Individual>();
+    	//List<Integer> recordIndex=new ArrayList<Integer>();
+    	
+    	for(int i=0;i<population.size();i++){
+    		HashSet set=new HashSet<Integer>();
+    		n[i]=0;	
+    		for(int j=0;j<population.size();j++){
+    			if((i!=j)&&(population.get(i).getFitness1()!=population.get(j).getFitness1()||population.get(i).getFitness2()!=population.get(j).getFitness2())){
+    				//Individual i dominates individual j
+        			if(population.get(i).getFitness1()>=population.get(j).getFitness1()&&population.get(i).getFitness2()>=population.get(j).getFitness2()){
+        				set.add(j);
+        			}
+        			//Individual j dominates individual i
+        			if(population.get(j).getFitness1()>=population.get(i).getFitness1()&&population.get(j).getFitness2()>=population.get(i).getFitness2()){
+        				n[i]++;
+        			}
+    			}
+
+    		}
+    		S.add(set);
+    		
+    		//find the first front
+    		if(n[i]==0){
+    			newPopulation.add(population.get(i));
+    			//recordIndex.add(i);
+    		}
+    		
+    	}
+    	firstFrontIndex=Math.min(newPopulation.size()-1, populationSize);
+    	
+//		System.out.println("Get there0!!!");
+		
+    	int lIndex=0;
+    	int rIndex=newPopulation.size()-1;
+    	int front=0;
+    	
+    	//sort the following front
+    	while(newPopulation.size()<population.size()){
+    		front++;
+//    		System.out.println("the size of newPopulation= "+newPopulation.size());
+//    		System.out.println("population.Size= "+population.size());
+    		if(newPopulation.size()>=populationSize) break;
+    		
+    		for(int i=lIndex;i<=rIndex;i++){
+    			for(int ele:S.get(newPopulation.get(i).getPopulationIndex())){
+    				n[ele]=n[ele]-1;
+    				if(n[ele]==0){
+    					newPopulation.add(population.get(ele));
+    					//recordIndex.add(ele);
+    				}	
+    			}   			
+    		}
+    		
+//			System.out.println("Front "+front+" is");
+//    		for(int i=lIndex;i<=rIndex;i++){
+//    			System.out.println(newPopulation.get(i).getFitness1()+" "+newPopulation.get(i).getFitness2());
+//    		}
+    		lIndex=rIndex+1;
+    		rIndex=newPopulation.size()-1;
+    	}
+    	
+//		System.out.println("Front "+front+" is");
+//		for(int i=lIndex;i<=rIndex;i++){
+//			System.out.println(newPopulation.get(i).getFitness1()+" "+newPopulation.get(i).getFitness2());
+//		}
+//    	
+//    	System.out.println("the size of new population is "+newPopulation.size());
+//    	System.out.println("the size of required population is "+populationSize);
+//    	System.out.println(lIndex);
+//    	System.out.println(rIndex);
+    	
+//		System.out.println("Get there1!!!");
+    	
+    	//Select the last front from newPopulation to give a crowding-distance-assignment
+    	List<Individual> subPopulation=new ArrayList<Individual>();
+    	for(int i=lIndex;i<=rIndex;i++){
+    		subPopulation.add(newPopulation.get(i));
+    		//subPopulation.get(subPopulation.size()-1).setPopulationIndex(subPopulation.size()-1);
+    	}
+    	
+    	//Sort by two goals and calculate the distance for every individualS
+    	class IndividualComparator1 implements Comparator<Individual>{
+    		//compare with fitness1
+    		@Override
+    		public int compare(Individual i1, Individual i2){
+    			if(i1.getFitness1()<i2.getFitness1()){
+    				return -1;
+    			}else{
+    				if(i1.getFitness1()>i2.getFitness1()){
+    					return 1;
+    				}else return 0;
+    			}
+    		}
+    	}
+    	
+    	IndividualComparator1 comparator1=new IndividualComparator1();
+    	Collections.sort(subPopulation,comparator1);
+    	
+    	//calculate distance from fitness1
+    	subPopulation.get(0).setcrowdDistance(Double.MAX_VALUE);
+    	subPopulation.get(subPopulation.size()-1).setcrowdDistance(Double.MAX_VALUE);
+    	double difference=subPopulation.get(subPopulation.size()-1).getFitness1()-subPopulation.get(0).getFitness1();
+    	
+    	for(int i=1;i<subPopulation.size()-1;i++){
+    		double temp=(subPopulation.get(i+1).getFitness1()-subPopulation.get(i-1).getFitness1())/difference;	
+    		subPopulation.get(i).setcrowdDistance(temp);
+    	}
+    	
+//    	for(Individual ele:subPopulation){
+//    		System.out.println(ele.getcrowdDistance());
+//    	}
+    	
+
+    	
+    	class IndividualComparator2 implements Comparator<Individual>{
+    		//compare with fitness2
+    		@Override
+    		public int compare(Individual i1, Individual i2){
+    			if(i1.getFitness2()<i2.getFitness2()){
+    				return -1;
+    			}else{
+    				if(i1.getFitness2()>i2.getFitness2()){
+    					return 1;
+    				}else return 0;
+    			}
+    		}
+    	}
+    	
+    	IndividualComparator2 comparator2=new IndividualComparator2();
+    	Collections.sort(subPopulation,comparator2);
+    	
+    	//calculate distance from fitness2
+    	subPopulation.get(0).setcrowdDistance(Double.MAX_VALUE);
+    	subPopulation.get(subPopulation.size()-1).setcrowdDistance(Double.MAX_VALUE);
+    	double difference2=subPopulation.get(subPopulation.size()-1).getFitness2()-subPopulation.get(0).getFitness2();
+    	
+    	for(int i=1;i<subPopulation.size()-1;i++){
+    		double temp=(subPopulation.get(i+1).getFitness2()-subPopulation.get(i-1).getFitness2())/difference2;	
+    		subPopulation.get(i).setcrowdDistance(subPopulation.get(i).getcrowdDistance()+temp);
+    	}
+    	
+//    	System.out.println();
+//    	for(Individual ele:subPopulation){
+//		System.out.println(ele.getcrowdDistance());
+//	    }
+
+    	class IndividualComparator3 implements Comparator<Individual>{
+    		//compare with crowdDistance
+    		@Override
+    		public int compare(Individual i1, Individual i2){
+    			if(i1.getcrowdDistance()>i2.getcrowdDistance()){
+    				return -1;
+    			}else{
+    				if(i1.getcrowdDistance()<i2.getcrowdDistance()){
+    					return 1;
+    				}else return 0;
+    			}
+    		}
+    	}
+    	
+    	IndividualComparator3 comparator3=new IndividualComparator3();
+    	Collections.sort(subPopulation,comparator3);
+    	
+//    	for(Individual ele:subPopulation){
+//		System.out.println(ele.getcrowdDistance());
+//	    }
+    	
+    	//add part of subPopulation to newPopulation
+    	for(int i=lIndex;i<populationSize;i++){
+    		newPopulation.set(i, subPopulation.get(i-lIndex));
+    	}
+    	for(int i=rIndex;i>=populationSize;i--){
+    		newPopulation.remove(i);
+    	}
+    	
+//    	System.out.println("PopulationSize = "+populationSize);
+//    	System.out.println("the size of newPopulation = "+newPopulation.size());
+//    	System.out.println("lIndex="+lIndex);
+//    	System.out.println("rIndex="+rIndex);
+
+    	this.population=newPopulation;
+    	for(int i=0;i<population.size();i++){
+    		population.get(i).setPopulationIndex(i);
+    	}
+    	
+//		System.out.println("Get there2!!!");
+    	
+//    	System.out.println("the size of Population = "+population.size());
+//    	for(Individual ele:newPopulation){
+//		System.out.println(ele.getFitness1()+" "+ele.getFitness2());
+//	    }
+    }
+
+
+	/**
+	 * Check if population has met termination condition -- this termination
+	 * condition is a simple one; simply check if we've exceeded the allowed
+	 * number of generations.
+	 * 
+	 * @param generationsCount
+	 *            Number of generations passed
+	 * @param maxGenerations
+	 *            Number of generations to terminate after
+	 * @return boolean True if termination condition met, otherwise, false
+	 */
+	public boolean isTerminationConditionMet(int generationsCount, int maxGenerations) {
+		return (generationsCount > maxGenerations);
+	}
+	
+	public ArrayList<Individual> getPopulation(){
+		return (ArrayList<Individual>) population;
+	}
+	
+	public HashSet<int[]> getPatternSet(){
+		return patternSet;
+	}
+	
+	
+	public int getFirstFrontIndex(){
+		return firstFrontIndex;
+	}
+	
+	
+    public static void main(String[] args) {
+		Population population=new Population(100,10,3);
+		population.initual();
+	}
+    
+    
+}

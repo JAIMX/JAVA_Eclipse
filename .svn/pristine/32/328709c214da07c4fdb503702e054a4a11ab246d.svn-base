@@ -1,0 +1,59 @@
+package mTSP_GA;
+
+import java.awt.*;
+import java.util.ArrayList;
+
+import javax.swing.*;
+
+public class Graph {
+    private ArrayList<Individual> firstFront;
+    
+    public Graph(ArrayList<Individual> firstFront){
+        this.firstFront=firstFront;
+        EventQueue.invokeLater(new Runnable(){
+            public void run(){
+                JFrame frame=new DrawFrame();
+                frame.setTitle("First Front");
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setVisible(true);
+            }
+        });
+    }
+
+}
+
+/**
+ * A frame that contains a panel with drawings
+ * @author DELL
+ *
+ */
+class DrawFrame extends JFrame{
+    public DrawFrame(){
+        add(new DrawComponent());
+        pack();
+    }
+}
+
+/**
+ * A component that displays the graph
+ */
+class DrawComponent extends JComponent{
+    private static final int DEFAULT_WIDTH=200;
+    private static final int DEFAULT_HEIGHT=500;
+    public void paintComponent(Graphics g,ArrayList<Individual> firstFront){
+        g.setColor(Color.black);
+        //g.drawLine(-200, 0, 0, 0);
+        //g.drawLine(0, 0, 0, -500);
+        
+        for(int i=0;i<firstFront.size();i++){
+            g.drawString(".", (int)firstFront.get(i).getFitness1()/10, (int)firstFront.get(i).getFitness2()/10);
+        }
+        
+    }
+    
+    public Dimension getPreferredSize(){
+        return new Dimension(DEFAULT_WIDTH,DEFAULT_HEIGHT);
+    }
+}
+
+

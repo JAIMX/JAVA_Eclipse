@@ -1,0 +1,31 @@
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.PriorityQueue;
+
+public class test {
+
+    public static void main(String[] args) {
+        
+//        Comparator<Integer> sort;
+//        sort=new Comparator<Integer>() {
+//            
+//            @Override
+//            public int compare(Integer o1, Integer o2) {
+//                // TODO Auto-generated method stub
+//                return o2-o1;
+//            }
+//        };
+//        
+//        PriorityQueue test=new PriorityQueue(1,sort);
+//        test.add(1);
+//        test.add(2);
+//        test.add(3);
+//        System.out.println(test.peek());
+    	
+    	int[][] p1={{1,2},{3,4}};
+    	int[][] p2=new int[2][2];
+    	
+    	System.arraycopy(p1, 0, p2, 0, 2);
+    	System.out.println(Arrays.toString(p2[1]));
+    }
+}

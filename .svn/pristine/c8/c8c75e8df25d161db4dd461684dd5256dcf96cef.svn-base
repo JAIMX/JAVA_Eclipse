@@ -1,0 +1,36 @@
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+//randomized contraction algorithm
+public class Week4_1 {
+
+	public static void main(String[] args) throws IOException {
+		ArrayList<ArrayList<Integer>> adjList = new ArrayList<ArrayList<Integer>>();
+
+		//read data to adjList
+		Scanner in = new Scanner(Paths.get("./data/kargerMinCut.txt"));
+
+		while (in.hasNextLine()) {
+			String line = in.nextLine();
+			ArrayList<Integer> temp = new ArrayList<Integer>();
+			String[] list = line.split("\\s+");
+			
+			for (int i = 1; i < list.length; i++) {
+				temp.add(Integer.parseInt(list[i]));
+			}
+			adjList.add(temp);
+		}
+		
+		int n=adjList.size();
+		long N=(long) ((Math.log1p(n-1)+1)*Math.pow(n, 2));
+		
+		long minCut=Long.MAX_VALUE;
+		for(int i=0;i<N;i++){
+			
+		}
+
+	}
+
+}

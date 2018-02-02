@@ -1,0 +1,682 @@
+package cg.master;
+
+import java.util.*;
+
+import javax.naming.TimeLimitExceededException;
+
+import org.jorlib.frameworks.columnGeneration.branchAndPrice.branchingDecisions.BranchingDecision;
+import org.jorlib.frameworks.columnGeneration.master.AbstractMaster;
+import org.jorlib.frameworks.columnGeneration.master.OptimizationSense;
+import org.jorlib.frameworks.columnGeneration.util.OrderedBiMap;
+
+
+import bap.branching.branchingDecisions.RoundQ;
+import bap.branching.branchingDecisions.RoundServiceEdge;
+import bap.branching.branchingDecisions.RoundServiceEdgeForAllPricingProblems;
+import cg.Cycle;
+import cg.SNDRCPricingProblem;
+import ilog.concert.*;
+import ilog.cplex.*;
+import model.SNDRC;
+import model.SNDRC.Edge;
+
+public final class Master extends AbstractMaster<SNDRC, Cycle, SNDRCPricingProblem, SNDRCMasterData> {
+
+	private IloObjective obj;
+//	private IloNumVar[][] x;
+//	private List<Set<Integer>> edgesForX;
+
+	private IloRange[][] flowBalanceConstraints;
+	private IloRange[] weakForcingConstraints;
+	private IloRange[][] resourceBoundConstraints;
+	
+	//branch on q variables
+	private Set<RoundQ> qBranchingSet;
+	private Map<RoundQ,IloRange> qBranchingconstraints;
+	
+	//branch on service edge
+	private Set<RoundServiceEdge> serviceEdgeBrachingSet;
+	private Map<RoundServiceEdge,IloRange> ServiceEdgeBranchingConstraints;
+	
+	//branch on service edge for all pricing problems
+	private Set<RoundServiceEdgeForAllPricingProblems> serviceEdge4AllBrachingSet;
+	private Map<RoundServiceEdgeForAllPricingProblems,IloRange> serviceEdge4AllBranchingConstraints; 
+
+	public Master(SNDRC dataModel, List<SNDRCPricingProblem> pricingProblems) {
+		super(dataModel, pricingProblems, OptimizationSense.MINIMIZE);
+		this.qBranchingSet=new HashSet<RoundQ>();
+		qBranchingconstraints=new HashMap<>();
+		
+		this.serviceEdgeBrachingSet=new HashSet<>();
+		this.ServiceEdgeBranchingConstraints=new HashMap<>();
+		
+		this.serviceEdge4AllBrachingSet=new HashSet<>();
+		this.serviceEdge4AllBranchingConstraints=new HashMap<>();
+		// this.buildModel();
+
+		// System.out.println("Master constructor. Columns: " +
+		// masterData.getNrColumns());
+		
+		
+		
+	}
+
+	/**
+	 * Builds the master model
+	 * 
+	 * @return Returns a MasterData object which is a data container for information
+	 *         coming from the master problem
+	 */
+	@Override
+	protected SNDRCMasterData buildModel() {
+		IloCplex cplex = null;
+
+		try {
+			
+			cplex = new IloCplex();
+
+			cplex.setOut(null);
+			cplex.setParam(IloCplex.IntParam.Threads, config.MAXTHREADS);
+			cplex.setParam(IloCplex.Param.Simplex.Tolerances.Markowitz, 0.1);
+			List<Map<Integer,IloNumVar>> x; //map:edgeIndex, x variable
+			IloNumVar[][] q;
+
+			// Define variables x
+//			x = new IloNumVar[dataModel.numDemand][dataModel.numArc];
+			x=new ArrayList<>();
+			for(int p=0;p<dataModel.numDemand;p++) {
+				Map<Integer,IloNumVar> initialX=new HashMap<Integer,IloNumVar>();
+				x.add(initialX);
+			}
+			
+			
+			// add x variables
+			for(int p=0;p<dataModel.numDemand;p++) {
+				for(int edgeIndex:dataModel.edgesForX.get(p)) {
+					Edge edge=dataModel.edgeSet.get(edgeIndex);
+					IloNumVar varX=cplex.numVar(0, dataModel.demandSet.get(p).volume,"x" +p+","+ edge.start + "," + edge.end );
+					x.get(p).put(edgeIndex, varX);
+				}
+			}
+			
+
+
+			// Define the objective
+			/**
+			 * Here we assume the cost of edge AT is 0
+			 */
+			IloLinearNumExpr exprObj = cplex.linearNumExpr();
+//			for (int p = 0; p < dataModel.numDemand; p++) {
+//				for (int edgeIndex = 0; edgeIndex < dataModel.numServiceArc; edgeIndex++) {
+//					exprObj.addTerm(dataModel.beta * dataModel.edgeSet.get(edgeIndex).duration, x[p][edgeIndex]);
+//				}
+//			}
+			
+			for(int p=0;p<dataModel.numDemand;p++) {
+				Map<Integer,IloNumVar> map=x.get(p);
+				for(int edgeIndex:map.keySet()) {
+					exprObj.addTerm(dataModel.beta*dataModel.edgeSet.get(edgeIndex).duration, map.get(edgeIndex));
+				}
+			}
+			
+
+			obj = cplex.addMinimize(exprObj);
+
+			// Define flowBalanceConstraints
+			flowBalanceConstraints = new IloRange[dataModel.numDemand][dataModel.abstractNumNode];
+
+			IloLinearNumExpr expr = cplex.linearNumExpr();
+			for (int p = 0; p < dataModel.numDemand; p++) {
+				Map<Integer,IloNumVar> map=x.get(p);
+				
+				for (int i = 0; i < dataModel.abstractNumNode; i++) {
+					expr.clear();
+					// edges which point from i
+					for (int edgeIndex : dataModel.pointToEdgeSet.get(i)) {
+						if(map.containsKey(edgeIndex)) {
+							expr.addTerm(1, map.get(edgeIndex));
+						}
+					}
+
+					// edges which point to i
+					for (int edgeIndex : dataModel.pointFromEdgeSet.get(i)) {
+						if(map.containsKey(edgeIndex)) {
+							expr.addTerm(-1, map.get(edgeIndex));
+						}
+					}
+					flowBalanceConstraints[p][i] = cplex.addEq(dataModel.b[p][i], expr);
+
+				}
+			}
+
+			// Define weakForcingConstraints
+			weakForcingConstraints = new IloRange[dataModel.numServiceArc];
+			for (int arcIndex = 0; arcIndex < dataModel.numServiceArc; arcIndex++) {
+				expr.clear();
+				for (int p = 0; p < dataModel.numDemand; p++) {
+					if(x.get(p).containsKey(arcIndex)) {
+						expr.addTerm(1, x.get(p).get(arcIndex));
+					}
+				}
+
+				weakForcingConstraints[arcIndex] = cplex.addGe(0, expr);
+			}
+
+			// Define resourceBoundConstraints
+			resourceBoundConstraints = new IloRange[dataModel.numOfCapacity][dataModel.numNode];
+			q = new IloNumVar[dataModel.numOfCapacity][dataModel.numNode];
+
+			for (int s = 0; s < dataModel.numOfCapacity; s++) {
+				for (int o = 0; o < dataModel.numNode; o++) {
+					q[s][o] = cplex.numVar(0, dataModel.vehicleLimit[s][o], "q" + s + "," + o);
+				}
+			}
+
+
+			for (int s = 0; s < dataModel.numOfCapacity; s++) {
+				for (int o = 0; o < dataModel.numNode; o++) {
+					expr.clear();
+					expr.addTerm(1, q[s][o]);
+					resourceBoundConstraints[s][o] = cplex.addEq(dataModel.vehicleLimit[s][o], expr);
+				}
+			}
+			
+			
+			
+			
+			// q branching constraints
+			if(qBranchingSet!=null) {
+				qBranchingconstraints=new HashMap<>();
+				// add q branching constraints to model
+				for (RoundQ branch : qBranchingSet) {
+					if (branch.roundUpOrDown == 0) { // round down
+						try {
+							expr = cplex.linearNumExpr();
+							expr.addTerm(1, q[branch.associatedPricingProblem.capacityTypeS][branch.associatedPricingProblem.originNodeO]);
+							IloRange qBranching = cplex.addGe(Math.floor(branch.qValue), expr, "round down q["+branch.associatedPricingProblem.capacityTypeS+"]["+branch.associatedPricingProblem.originNodeO+"]");
+							qBranchingconstraints.put(branch, qBranching);
+						} catch (IloException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+
+					}
+
+					if (branch.roundUpOrDown == 1) {// round up
+						try {
+							expr = cplex.linearNumExpr();
+							expr.addTerm(1, q[branch.associatedPricingProblem.capacityTypeS][branch.associatedPricingProblem.originNodeO]);
+							IloRange qBranching = cplex.addLe(Math.ceil(branch.qValue), expr, "round up q["+branch.associatedPricingProblem.capacityTypeS+"]["+branch.associatedPricingProblem.originNodeO+"]");
+							qBranchingconstraints.put(branch, qBranching);
+						} catch (IloException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+
+					}
+
+				}
+			}
+			
+			
+			//service edge branching constraints
+			if(serviceEdgeBrachingSet!=null) {
+				for(RoundServiceEdge serviceEdgeBranch:serviceEdgeBrachingSet) {
+					if(serviceEdgeBranch.roundUpOrDown==0) {// round down
+						expr=cplex.linearNumExpr();
+						IloRange edgeBranching=cplex.addGe(Math.floor(serviceEdgeBranch.branchEdgeValue), expr,"round down service edge: "+serviceEdgeBranch.branchEdgeIndex+"originNode: "+serviceEdgeBranch.pricingProblem.originNodeO+"capacityType: "+serviceEdgeBranch.pricingProblem.capacityTypeS);
+						ServiceEdgeBranchingConstraints.put(serviceEdgeBranch, edgeBranching);
+					}else { // round up
+						expr=cplex.linearNumExpr();
+						IloRange edgeBranching=cplex.addLe(Math.ceil(serviceEdgeBranch.branchEdgeValue), expr,"round up service edge: "+serviceEdgeBranch.branchEdgeIndex+"originNode: "+serviceEdgeBranch.pricingProblem.originNodeO+"capacityType: "+serviceEdgeBranch.pricingProblem.capacityTypeS);
+						ServiceEdgeBranchingConstraints.put(serviceEdgeBranch, edgeBranching);
+					}
+				}
+			}
+			
+			//service edge branching for all pricing problems constraints
+			if(serviceEdge4AllBrachingSet!=null) {
+				for(RoundServiceEdgeForAllPricingProblems serviceEdgeBranch:serviceEdge4AllBrachingSet) {
+					if(serviceEdgeBranch.roundUpOrDown==0) {// round down
+						expr=cplex.linearNumExpr();
+						IloRange edgeBranching=cplex.addGe(Math.floor(serviceEdgeBranch.branchEdgeValue), expr,"round down service edge: "+serviceEdgeBranch.branchEdgeIndex);
+						serviceEdge4AllBranchingConstraints.put(serviceEdgeBranch, edgeBranching);
+					}else { // round up
+						expr=cplex.linearNumExpr();
+						IloRange edgeBranching=cplex.addLe(Math.ceil(serviceEdgeBranch.branchEdgeValue), expr,"round up service edge: "+serviceEdgeBranch.branchEdgeIndex);
+						serviceEdge4AllBranchingConstraints.put(serviceEdgeBranch, edgeBranching);
+					}
+				}
+			}
+
+			
+			
+			Map<SNDRCPricingProblem, OrderedBiMap<Cycle, IloNumVar>> varMap = new LinkedHashMap<>();
+			for (SNDRCPricingProblem pricingProblem : pricingProblems)
+				varMap.put(pricingProblem, new OrderedBiMap<>());
+
+			// Create a new data object which will store information from the master. This
+			// object automatically be passed to the CutHandler class.
+			return new SNDRCMasterData(cplex, pricingProblems, varMap,qBranchingconstraints,ServiceEdgeBranchingConstraints,x,q,serviceEdge4AllBranchingConstraints,dataModel);
+			
+			
+			
+			
+
+		} catch (IloException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
+
+	}
+
+	/**
+	 * Solve the master problem
+	 * 
+	 * @param timeLimit
+	 *            Future point in time by which the solve procedure must be
+	 *            completed
+	 * @return true if the master problem has been solved
+	 * @throws TimeLimitExceededException
+	 *             TimeLimitExceededException
+	 */
+	@Override
+	protected boolean solveMasterProblem(long timeLimit) {
+
+		try {
+			// Set time limit
+			double timeRemaining = Math.max(1, (timeLimit - System.currentTimeMillis()) / 1000.0);
+//			System.out.println(masterData.cplex.toString());
+
+			masterData.cplex.setParam(IloCplex.DoubleParam.TiLim, timeRemaining); // set time limit in seconds
+
+			// Potentially export the model
+			if (config.EXPORT_MODEL) {
+				masterData.cplex.exportModel(config.EXPORT_MASTER_DIR + "master_" + this.getIterationCount() + ".lp");
+//				System.out.println(masterData.cplex.toString());
+			}
+
+			// Solve the model
+			if (!masterData.cplex.solve() || masterData.cplex.getStatus() != IloCplex.Status.Optimal) {
+				if (masterData.cplex.getCplexStatus() == IloCplex.CplexStatus.AbortTimeLim) // Aborted due to time limit
+					throw new TimeLimitExceededException();
+				else {
+					masterData.cplex.exportModel(config.EXPORT_MASTER_DIR + "check.lp");
+					throw new RuntimeException("Master problem solve failed! Status: " + masterData.cplex.getStatus());
+				}
+
+			} else {
+				masterData.objectiveValue = masterData.cplex.getObjValue();
+				
+//				System.out.println("||-----------------------temp solution out---------------------||");
+//				this.printSolution();
+//				for (int s = 0; s < dataModel.numOfCapacity; s++) {
+//					for (int o = 0; o < dataModel.numNode; o++) {
+//						System.out.println("q"+s+","+o+"="+masterData.cplex.getValue(masterData.q[s][o]));
+//					}
+//				}
+//				
+//				for(int demand=0;demand<dataModel.numDemand;demand++) {
+//					for(int edgeIndex=0;edgeIndex<dataModel.numArc;edgeIndex++) {
+//						
+//						if(masterData.x.get(demand).containsKey(edgeIndex)) {
+//							if(masterData.cplex.getValue(masterData.x.get(demand).get(edgeIndex))>config.PRECISION) {
+//								Edge edge=dataModel.edgeSet.get(edgeIndex);
+//								System.out.println("x["+demand+"]:"+edge.start+"->"+edge.end+"= "+masterData.cplex.getValue(masterData.x.get(demand).get(edgeIndex)));
+//							}
+//						}
+//						
+//						
+//					}
+//				}
+				
+				
+
+			}
+		} catch (IloException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TimeLimitExceededException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return true;
+	}
+
+	/**
+	 * Adds a new column to the master problem
+	 * 
+	 * @param column
+	 *            column to add
+	 */
+	@Override
+	public void addColumn(Cycle column) {
+
+		try {
+			// Register column with objective
+			IloColumn iloColumn = masterData.cplex.column(obj, column.cost);
+
+			// weak forcing constraints
+			for (int edgeIndex : column.edgeIndexSet) {
+				if(dataModel.edgeSet.get(edgeIndex).edgeType==0) {
+					iloColumn = iloColumn.and(masterData.cplex.column(weakForcingConstraints[edgeIndex],
+							-dataModel.capacity[column.associatedPricingProblem.capacityTypeS]));
+				}
+
+			}
+
+			// resource bound constraints
+			if (!column.isArtificialColumn) {
+				iloColumn = iloColumn.and(masterData.cplex.column(
+						resourceBoundConstraints[column.associatedPricingProblem.capacityTypeS][column.associatedPricingProblem.originNodeO],
+						1));
+			}
+			
+			
+			//service edge branching constraints
+			if(column.isArtificialColumn) {
+				for(RoundServiceEdge serviceEdgeBranching:masterData.serviceEdgeBrachingSet) {
+					if(serviceEdgeBranching.roundUpOrDown==1&&column.edgeIndexSet.contains(serviceEdgeBranching.branchEdgeIndex)) {
+						IloRange constraint=masterData.ServiceEdgeBranchingConstraints.get(serviceEdgeBranching);
+						iloColumn=iloColumn.and(masterData.cplex.column(constraint,1));
+					}
+				}
+			}else { // not an artificial column
+				for(RoundServiceEdge serviceEdgeBranching:masterData.serviceEdgeBrachingSet) {
+					if(column.associatedPricingProblem==serviceEdgeBranching.pricingProblem&&column.edgeIndexSet.contains(serviceEdgeBranching.branchEdgeIndex)) {
+						IloRange constraint=masterData.ServiceEdgeBranchingConstraints.get(serviceEdgeBranching);
+						iloColumn=iloColumn.and(masterData.cplex.column(constraint,1));
+					}
+				}
+			}
+			
+			//service edge for all pricing problems branching constraints
+			if(column.isArtificialColumn) {
+				for(RoundServiceEdgeForAllPricingProblems serviceEdgeBranching:masterData.serviceEdge4AllBrachingSet) {
+					if(serviceEdgeBranching.roundUpOrDown==1&&column.edgeIndexSet.contains(serviceEdgeBranching.branchEdgeIndex)) {
+						IloRange constraint=masterData.serviceEdge4AllBranchingConstraints.get(serviceEdgeBranching);
+						iloColumn=iloColumn.and(masterData.cplex.column(constraint,1));
+					}
+				}
+			}else { // not an artificial column
+				for(RoundServiceEdgeForAllPricingProblems serviceEdgeBranching:masterData.serviceEdge4AllBrachingSet) {
+					if(column.edgeIndexSet.contains(serviceEdgeBranching.branchEdgeIndex)) {
+						IloRange constraint=masterData.serviceEdge4AllBranchingConstraints.get(serviceEdgeBranching);
+						iloColumn=iloColumn.and(masterData.cplex.column(constraint,1));
+					}
+				}
+			}
+			
+			
+			// add artificial cycles for resource bound constraints
+			if(column.isArtificialColumn&&column.ifForResourceBoundConstraints==1) {
+				IloRange constraint=resourceBoundConstraints[column.associatedPricingProblem.capacityTypeS][column.associatedPricingProblem.originNodeO];
+				iloColumn=iloColumn.and(masterData.cplex.column(constraint,1));
+			}
+
+
+			// Create the variable and store it
+			if(column.isArtificialColumn) {
+				IloNumVar var = masterData.cplex.numVar(iloColumn, 0, Double.MAX_VALUE,
+						"art_" + column.associatedPricingProblem.capacityTypeS + ","
+								+ column.associatedPricingProblem.originNodeO + ","
+								+ masterData.getNrColumnsForPricingProblem(column.associatedPricingProblem));
+				masterData.cplex.add(var);
+				masterData.addColumn(column, var);
+			}else {
+				IloNumVar var = masterData.cplex.numVar(iloColumn, 0, Double.MAX_VALUE,
+						"z_" + column.associatedPricingProblem.capacityTypeS + ","
+								+ column.associatedPricingProblem.originNodeO + ","
+								+ masterData.getNrColumnsForPricingProblem(column.associatedPricingProblem));
+				masterData.cplex.add(var);
+				masterData.addColumn(column, var);
+			}
+
+
+		} catch (IloException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	/**
+	 * Extracts information from the master problem which is required by the pricing
+	 * problems, e.g. the reduced costs/dual values
+	 * 
+	 * @param pricingProblem
+	 *            pricing problem
+	 */
+	@Override
+	public void initializePricingProblem(SNDRCPricingProblem pricingProblem) {
+		try {
+			double[] modifiedCosts = new double[dataModel.numServiceArc]; // Modified cost for every service edge
+			double modifiedCost = 0;
+
+			for (int edgeIndex = 0; edgeIndex < dataModel.numServiceArc; edgeIndex++) {
+				modifiedCosts[edgeIndex] = masterData.cplex.getDual(weakForcingConstraints[edgeIndex])
+						* dataModel.capacity[pricingProblem.capacityTypeS];
+				modifiedCosts[edgeIndex] += dataModel.alpha / (dataModel.speed * dataModel.drivingTimePerDay)
+						* dataModel.edgeSet.get(edgeIndex).duration;
+			}
+			
+			
+			//service edge branching constraints
+			for(RoundServiceEdge serviceEdgeBranch:masterData.serviceEdgeBrachingSet) {
+				if(serviceEdgeBranch.pricingProblem==pricingProblem) {
+					IloRange constraint=masterData.ServiceEdgeBranchingConstraints.get(serviceEdgeBranch);
+					double dualValue=masterData.cplex.getDual(constraint);
+					modifiedCosts[serviceEdgeBranch.branchEdgeIndex]-=dualValue;
+				}
+			}
+			
+			//service edge 4 all pricing problems branching constraints
+			for(RoundServiceEdgeForAllPricingProblems serviceEdgeBranch:masterData.serviceEdge4AllBrachingSet) {
+				IloRange constraint=masterData.serviceEdge4AllBranchingConstraints.get(serviceEdgeBranch);
+				double dualValue=masterData.cplex.getDual(constraint);
+				modifiedCosts[serviceEdgeBranch.branchEdgeIndex]-=dualValue;
+			}
+			
+
+			modifiedCost = dataModel.fixedCost[pricingProblem.originNodeO][pricingProblem.capacityTypeS] - masterData.cplex
+					.getDual(resourceBoundConstraints[pricingProblem.capacityTypeS][pricingProblem.originNodeO]);
+			pricingProblem.initPricingProblem(modifiedCosts, modifiedCost);
+
+		} catch (IloException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Gets the solution from the master problem
+	 * 
+	 * @return Returns all non-zero valued columns from the master problem
+	 */
+	@Override
+	public List<Cycle> getSolution() {
+		List<Cycle> solution = new ArrayList<>();
+		try {
+			for (SNDRCPricingProblem pricingProblem : pricingProblems) {
+				Cycle[] cycles = masterData.getVarMapForPricingProblem(pricingProblem)
+						.getKeysAsArray(new Cycle[masterData.getNrColumnsForPricingProblem(pricingProblem)]);
+				IloNumVar[] vars = masterData.getVarMapForPricingProblem(pricingProblem)
+						.getValuesAsArray(new IloNumVar[masterData.getNrColumnsForPricingProblem(pricingProblem)]);
+				double[] values = masterData.cplex.getValues(vars);
+
+				// Iterate over each column and add it to the solution if it has a non-zero
+				// value
+				for (int i = 0; i < cycles.length; i++) {
+					cycles[i].value = values[i];
+					if (values[i] >= config.PRECISION) {
+						solution.add(cycles[i]);
+					}
+				}
+			}
+		} catch (IloException e) {
+			e.printStackTrace();
+		}
+		return solution;
+	}
+
+	/**
+	 * Prints the solution
+	 */
+	@Override
+	public void printSolution() {
+		List<Cycle> solution = this.getSolution();
+		for (Cycle m : solution)
+			System.out.println(m+":"+m.value);
+	}
+
+	/**
+	 * Closes the master problem
+	 */
+	@Override
+	public void close() {
+		masterData.cplex.end();
+	}
+
+	// /**
+	// * Checks whether there are any violated inequalities, thereby invoking the
+	// cut handler
+	// * @return true if violated inqualities have been found (and added to the
+	// master problem)
+	// */
+	// @Override
+	// public boolean hasNewCuts(){
+	//
+	// }
+
+	
+	
+	
+	/**
+	 * Listen to branching decisions
+	 * 
+	 * @param bd
+	 *            Branching decision
+	 */
+	@Override
+	public void branchingDecisionPerformed(BranchingDecision bd) {
+
+		
+		if(bd instanceof RoundQ) {
+			qBranchingSet.add((RoundQ) bd);
+		}
+		
+		if(bd instanceof RoundServiceEdge) {
+			serviceEdgeBrachingSet.add((RoundServiceEdge) bd);
+		}
+		
+		if(bd instanceof RoundServiceEdgeForAllPricingProblems) {
+			serviceEdge4AllBrachingSet.add((RoundServiceEdgeForAllPricingProblems) bd);
+		}
+		
+		
+		
+		
+		// destroy the master and rebuild it		
+		this.close();
+		masterData = this.buildModel();
+		
+
+	}
+
+	/**
+	 * Undo branching decisions during backtracking in the Branch-and-Price tree
+	 * 
+	 * @param bd
+	 *            Branching decision
+	 */
+	@Override
+	public void branchingDecisionReversed(BranchingDecision bd) {
+
+		if (bd instanceof RoundQ) {
+			// masterData.cplex.remove(masterData.qBranchingconstraints.get(bd));
+			// masterData.qBranching.remove(bd);
+			try {
+				masterData.cplex.remove(masterData.qBranchingconstraints.get(bd));
+				masterData.qBranchingSet.remove(bd);
+				masterData.qBranchingconstraints.remove(bd);
+				this.qBranchingconstraints.remove(bd);
+				this.qBranchingSet.remove(bd);
+			} catch (IloException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		
+		
+		if(bd instanceof RoundServiceEdge) {
+			try {
+				masterData.cplex.remove(masterData.ServiceEdgeBranchingConstraints.get(bd));
+				masterData.serviceEdgeBrachingSet.remove(bd);
+				masterData.ServiceEdgeBranchingConstraints.remove(bd);
+				this.ServiceEdgeBranchingConstraints.remove(bd);
+				this.serviceEdgeBrachingSet.remove(bd);
+				
+				
+			} catch (IloException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		if(bd instanceof RoundServiceEdgeForAllPricingProblems) {
+			try {
+				masterData.cplex.remove(masterData.serviceEdge4AllBranchingConstraints.get(bd));
+				masterData.serviceEdge4AllBrachingSet.remove(bd);
+				masterData.serviceEdge4AllBranchingConstraints.remove(bd);
+				this.serviceEdge4AllBranchingConstraints.remove(bd);
+				this.serviceEdge4AllBrachingSet.remove(bd);
+				
+				
+			} catch (IloException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		
+		
+		
+
+	}
+	
+	
+	public void addFixVarConstraint(Cycle cycle) throws IloException {
+		
+		IloLinearNumExpr expr=masterData.cplex.linearNumExpr();
+		expr.addTerm(masterData.getVar(cycle.associatedPricingProblem,cycle), 1);
+		IloRange fixVarConstraint=masterData.cplex.addEq(expr, Math.ceil(cycle.value));
+		
+		masterData.fixVarConstraints.put(cycle, fixVarConstraint);
+		SNDRCPricingProblem pricingProblem=pricingProblems.get(cycle.associatedPricingProblem.capacityTypeS*dataModel.numNode+cycle.associatedPricingProblem.originNodeO);
+		pricingProblem.fixCycleSet.add(cycle);
+		
+//		System.out.println(masterData.cplex.toString());
+//		return fixVarConstraint;
+		
+	}
+	
+	public void removeFixVarConstraint() throws IloException {
+//		for(IloRange constraint:constraints) {
+//			masterData.cplex.remove(constraint);
+//		}
+		
+		for(Cycle cycle:masterData.fixVarConstraints.keySet()) {
+			masterData.cplex.remove(masterData.fixVarConstraints.get(cycle));
+		}
+		
+		for(SNDRCPricingProblem problem:pricingProblems) {
+			problem.fixCycleSet=new HashSet<>();
+		}
+		
+		masterData.fixVarConstraints=new HashMap<>();
+	}
+
+}

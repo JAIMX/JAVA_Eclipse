@@ -1,0 +1,127 @@
+package mTSP_GA;
+
+import java.awt.*;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.util.ArrayList;
+
+import javax.swing.*;
+
+//public class Graph {
+//    private ArrayList<Individual> firstFront;
+//    
+//    public Graph(ArrayList<Individual> firstFront){
+//        this.firstFront=firstFront;
+//        EventQueue.invokeLater(new Runnable(){
+//            public void run(){
+//                JFrame frame=new DrawFrame();
+//                frame.setTitle("First Front");
+//                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//                frame.setVisible(true);
+//            }
+//        });
+//    }
+//
+//}
+//
+///**
+// * A frame that contains a panel with drawings
+// * @author DELL
+// *
+// */
+//class DrawFrame extends JFrame{
+//    public DrawFrame(){
+//        add(new DrawComponent());
+//        pack();
+//    }
+//}
+//
+///**
+// * A component that displays the graph
+// */
+//class DrawComponent extends JComponent{
+//    private static final int DEFAULT_WIDTH=200;
+//    private static final int DEFAULT_HEIGHT=500;
+//    public void paintComponent(Graphics g,ArrayList<Individual> firstFront){
+//        g.setColor(Color.black);
+//        //g.drawLine(-200, 0, 0, 0);
+//        //g.drawLine(0, 0, 0, -500);
+//        
+//        for(int i=0;i<firstFront.size();i++){
+//            g.drawString(".", (int)firstFront.get(i).getFitness1()/10, (int)firstFront.get(i).getFitness2()/10);
+//        }
+//        
+//    }
+//    
+//    public Dimension getPreferredSize(){
+//        return new Dimension(DEFAULT_WIDTH,DEFAULT_HEIGHT);
+//    }
+//}
+
+public class Graph extends Frame implements WindowListener {
+
+	static int x[] ;
+	static int y[] ;
+	
+	public Graph(String title,int width,int height) {
+		super(title);
+		setSize(width, height);
+		setVisible(true);
+	}
+
+
+
+	public void windowClosed(WindowEvent e) {
+	}
+	public void windowClosing(WindowEvent e) {
+	}
+
+
+	public void windowActivated(WindowEvent e) {
+	}
+
+	public void windowDeactivated(WindowEvent e) {
+	}
+
+	public void windowIconified(WindowEvent e) {
+		System.out.println("windowIconified() method");
+	}
+
+	public void windowDeiconified(WindowEvent e) {
+		System.out.println("windowDeiconified() method");
+	}
+
+	public void windowOpened(WindowEvent e) {
+		System.out.println("windowOpened() method");
+	}
+
+	public void paint(Graphics g, ArrayList<Individual> firstFront) {
+
+		for(int i=0;i<firstFront.size();i++ ){
+			g.drawOval((int)firstFront.get(i).getFitness1(), (int)firstFront.get(i).getFitness2(), 1, 1);
+		}
+
+
+//		for (i = 1; i < nbDots; i++) {
+//			g.drawLine(x[trip[i - 1] - 1], screenMaxLat - y[trip[i - 1] - 1], x[trip[i] - 1], screenMaxLat - y[trip[i] - 1]);
+//		}
+//		// y[trip[0] - 1]);
+//		g.drawLine(x[trip[i - 1] - 1], screenMaxLat - y[trip[i - 1] - 1], x[trip[0] - 1], screenMaxLat - y[trip[0] - 1]);
+//	
+	}
+	
+//	public static void main(String args[]) {
+//		
+//		for (int i = nbCities; i < nbDots; i++) {
+//			x[i] = rf.x[0];
+//			y[i] = rf.y[0];
+//		}
+//
+//		Graph g = new Graph("mTSP");
+//
+//		g.addWindowListener((WindowListener) g);
+//
+//	}
+}
+
+

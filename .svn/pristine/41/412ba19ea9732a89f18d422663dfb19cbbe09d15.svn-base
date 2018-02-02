@@ -1,0 +1,81 @@
+package mTSP_GA;
+
+import java.awt.*;
+import java.util.ArrayList;
+
+import javax.swing.*;
+
+/**
+ * @version 1.33 2007-05-12
+ * @author Cay Horstmann
+ */
+public class Graph
+{
+    static double[] x;
+    static double[] y;
+    ArrayList<Individual> firstFront;
+    
+    public Graph(ArrayList<Individual> firstFront){
+        this.firstFront=firstFront;
+        EventQueue.invokeLater(() ->
+        {
+           JFrame frame = new DrawFrame();
+           frame.setTitle("DrawTest");
+           frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+           frame.setVisible(true);
+        });
+    }
+    
+    
+   public static void main(String[] args)
+   {
+      EventQueue.invokeLater(() ->
+         {
+            JFrame frame = new DrawFrame();
+            frame.setTitle("DrawTest");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setVisible(true);
+         });
+   }
+}
+
+/**
+ * A frame that contains a panel with drawings
+ */
+class DrawFrame extends JFrame
+{
+   public DrawFrame()
+   {      
+      add(new DrawComponent());
+      pack();
+   }
+}
+
+/**
+ * A component that displays rectangles and ellipses.
+ */
+class DrawComponent extends JComponent
+{
+   private static final int DEFAULT_WIDTH = 50;
+   private static final int DEFAULT_HEIGHT = 50;
+
+   public void paintComponent(Graphics g,ArrayList<Individual> firstFront)
+   {
+       //g.drawOval(40, 40, 1, 1);
+       for(int i=0;i<firstFront.size();i++){
+           double x=firstFront.get(i).getFitness1();
+           double y=firstFront.get(i).getFitness2();
+           if(x<=DEFAULT_WIDTH &&y<=DEFAULT_HEIGHT){
+               g.drawOval((int)x, (int)y, 1,1);
+           }
+           
+       }
+
+   }
+   
+   public Dimension getPreferredSize() { return new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT); }
+
+}
+
+
+

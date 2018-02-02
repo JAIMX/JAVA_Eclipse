@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/cplex.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/C:/ILOG/CPLEX_Studio126/doc/html/en-US/refjavacplex/html/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/poi-3.11-20141221.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
